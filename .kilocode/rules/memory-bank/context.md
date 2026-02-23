@@ -20,6 +20,13 @@ A complete, professional agency website for NEEDMO CONSULT - a strategic social 
 - [x] Scroll reveal animations with IntersectionObserver
 - [x] Fully responsive (mobile-first, 320px-1440px)
 - [x] WCAG 2.1 AA accessibility compliance
+- [x] SVG logo system (7 files: horizontal, stacked, icon, social, favicon variants)
+- [x] React Logo component (LogoSVG, Logo, LogoText) with dark/light adaptation
+- [x] Video embedding optimization: VideoPlayer + VideoModal components
+- [x] Lazy-loaded YouTube/Vimeo embeds (thumbnail-first, IntersectionObserver)
+- [x] Video modal lightbox with focus trap, ESC close, body scroll lock
+- [x] Preconnect hints for YouTube/Vimeo in layout.tsx
+- [x] Video CSS system in globals.css (play button, spinner, modal animations)
 
 ## Current Structure
 
