@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="NEEDMO CONSULT icon">
+  <title>NM - NEEDMO CONSULT</title>
+  <!-- Background square with rounded corners -->
+  <rect x="0" y="0" width="64" height="64" rx="12" fill="#1A2332"/>
+  <!-- Orange accent corner triangle -->
+  <polygon points="0,0 20,0 0,20" fill="#FF6B35" opacity="0.9"/>
+  <!-- N letter - geometric construction -->
+  <!-- Left vertical bar of N -->
+  <rect x="10" y="18" width="6" height="28" rx="1" fill="#FFFFFF"/>
+  <!-- Diagonal of N -->
+  <polygon points="10,18 16,18 30,42 30,46 24,46" fill="#FFFFFF"/>
+  <!-- Right vertical bar of N -->
+  <rect x="24" y="18" width="6" height="28" rx="1" fill="#FFFFFF"/>
+  <!-- M letter - geometric construction -->
+  <!-- Left vertical bar of M -->
+  <rect x="34" y="18" width="5" height="28" rx="1" fill="#FF6B35"/>
+  <!-- Left diagonal of M -->
+  <polygon points="34,18 39,18 44,30 41,30" fill="#FF6B35"/>
+  <!-- Right diagonal of M -->
+  <polygon points="49,18 54,18 49,30 46,30" fill="#FF6B35"/>
+  <!-- Right vertical bar of M -->
+  <rect x="49" y="18" width="5" height="28" rx="1" fill="#FF6B35"/>
+  <!-- Center peak of M -->
+  <polygon points="41,30 44,30 44,46 41,46" fill="#FF6B35"/>
+  <polygon points="46,30 49,30 49,46 46,46" fill="#FF6B35"/>
+</svg>

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 80" width="180" height="80" role="img" aria-label="NEEDMO CONSULT logo stacked dark">
+  <title>NEEDMO CONSULT</title>
+  <!-- Background accent bar -->
+  <rect x="0" y="0" width="4" height="80" fill="#FF6B35" rx="2"/>
+  <!-- NEEDMO text -->
+  <text
+    x="14"
+    y="44"
+    font-family="Montserrat, Poppins, sans-serif"
+    font-weight="800"
+    font-size="32"
+    letter-spacing="1"
+    fill="#FFFFFF"
+  >NEEDMO</text>
+  <!-- CONSULT text -->
+  <text
+    x="16"
+    y="62"
+    font-family="Montserrat, Poppins, sans-serif"
+    font-weight="400"
+    font-size="12"
+    letter-spacing="5"
+    fill="#E0E0E0"
+  >CONSULT</text>
+  <!-- Tagline -->
+  <text
+    x="16"
+    y="76"
+    font-family="Montserrat, Poppins, sans-serif"
+    font-weight="400"
+    font-size="8"
+    letter-spacing="2"
+    fill="#FF6B35"
+  >YOUR BRAND DESERVES MORE</text>
+</svg>

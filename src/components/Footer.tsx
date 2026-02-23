@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { LogoText } from "@/components/Logo";
 
 const quickLinks = [
   { label: "Home", href: "#home" },
@@ -95,19 +96,8 @@ export default function Footer() {
           {/* Column 1 - Brand */}
           <div>
             {/* Logo */}
-            <div className="flex items-center gap-1 mb-4">
-              <span
-                className="text-2xl font-black tracking-tight text-white"
-                style={{ fontFamily: "'Montserrat', sans-serif" }}
-              >
-                NEEDMO
-              </span>
-              <span
-                className="text-2xl font-light tracking-widest"
-                style={{ fontFamily: "'Montserrat', sans-serif", color: "#FF6B35" }}
-              >
-                CONSULT
-              </span>
+            <div className="mb-4">
+              <LogoText theme="dark" size="md" />
             </div>
 
             {/* Tagline */}

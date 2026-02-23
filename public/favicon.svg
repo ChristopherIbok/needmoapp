@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="NEEDMO CONSULT favicon">
+  <title>NM</title>
+  <!-- Background -->
+  <rect x="0" y="0" width="32" height="32" rx="6" fill="#1A2332"/>
+  <!-- Orange accent corner -->
+  <polygon points="0,0 10,0 0,10" fill="#FF6B35"/>
+  <!-- N letter - simplified for small size -->
+  <rect x="4" y="9" width="3" height="14" rx="0.5" fill="#FFFFFF"/>
+  <polygon points="4,9 7,9 13,21 13,23 10,23" fill="#FFFFFF"/>
+  <rect x="10" y="9" width="3" height="14" rx="0.5" fill="#FFFFFF"/>
+  <!-- M letter - simplified for small size -->
+  <rect x="16" y="9" width="3" height="14" rx="0.5" fill="#FF6B35"/>
+  <polygon points="16,9 19,9 22,15 20.5,15" fill="#FF6B35"/>
+  <polygon points="25,9 28,9 25.5,15 24,15" fill="#FF6B35"/>
+  <rect x="25" y="9" width="3" height="14" rx="0.5" fill="#FF6B35"/>
+  <rect x="20.5" y="15" width="3" height="8" rx="0.5" fill="#FF6B35"/>
+</svg>

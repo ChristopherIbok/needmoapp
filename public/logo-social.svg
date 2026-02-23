@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-label="NEEDMO CONSULT social media logo">
+  <title>NEEDMO CONSULT</title>
+  <!-- Background -->
+  <rect x="0" y="0" width="400" height="400" fill="#1A2332"/>
+  <!-- Orange accent corner -->
+  <polygon points="0,0 80,0 0,80" fill="#FF6B35" opacity="0.8"/>
+  <!-- Bottom right accent -->
+  <polygon points="400,400 320,400 400,320" fill="#FF6B35" opacity="0.3"/>
+  <!-- NM Monogram - large centered -->
+  <!-- N letter -->
+  <rect x="60" y="130" width="28" height="120" rx="4" fill="#FFFFFF"/>
+  <polygon points="60,130 88,130 148,230 148,250 120,250" fill="#FFFFFF"/>
+  <rect x="120" y="130" width="28" height="120" rx="4" fill="#FFFFFF"/>
+  <!-- M letter -->
+  <rect x="170" y="130" width="24" height="120" rx="4" fill="#FF6B35"/>
+  <polygon points="170,130 194,130 218,185 206,185" fill="#FF6B35"/>
+  <polygon points="242,130 266,130 254,185 242,185" fill="#FF6B35"/>
+  <rect x="242" y="130" width="24" height="120" rx="4" fill="#FF6B35"/>
+  <rect x="206" y="185" width="16" height="65" rx="2" fill="#FF6B35"/>
+  <rect x="242" y="185" width="16" height="65" rx="2" fill="#FF6B35"/>
+  <!-- NEEDMO text -->
+  <text
+    x="200"
+    y="300"
+    font-family="Montserrat, Poppins, sans-serif"
+    font-weight="800"
+    font-size="42"
+    letter-spacing="3"
+    fill="#FFFFFF"
+    text-anchor="middle"
+  >NEEDMO</text>
+  <!-- CONSULT text -->
+  <text
+    x="200"
+    y="330"
+    font-family="Montserrat, Poppins, sans-serif"
+    font-weight="400"
+    font-size="16"
+    letter-spacing="8"
+    fill="#E0E0E0"
+    text-anchor="middle"
+  >CONSULT</text>
+  <!-- Tagline -->
+  <text
+    x="200"
+    y="360"
+    font-family="Montserrat, Poppins, sans-serif"
+    font-weight="400"
+    font-size="11"
+    letter-spacing="3"
+    fill="#FF6B35"
+    text-anchor="middle"
+  >YOUR BRAND DESERVES MORE</text>
+  <!-- Decorative line -->
+  <rect x="160" y="340" width="80" height="2" rx="1" fill="#FF6B35" opacity="0.5"/>
+</svg>

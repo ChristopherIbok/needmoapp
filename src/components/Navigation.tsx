@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { useTheme } from "@/hooks/useTheme";
+import { LogoText } from "@/components/Logo";
 
 const navLinks = [
   { label: "Home", href: "#home" },
@@ -72,32 +72,11 @@ export default function Navigation() {
           className="container-custom flex items-center justify-between h-16 md:h-20"
         >
           {/* Logo */}
-          <Link
-            href="/"
-            className="flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B35] rounded"
-            aria-label="NEEDMO CONSULT - Home"
-          >
-            <span
-              className="text-2xl font-black tracking-tight"
-              style={{
-                fontFamily: "'Montserrat', sans-serif",
-                color: isScrolled || mobileOpen
-                  ? theme === "dark" ? "#FFFFFF" : "#1A2332"
-                  : "#1A2332",
-              }}
-            >
-              NEEDMO
-            </span>
-            <span
-              className="text-2xl font-light tracking-widest"
-              style={{
-                fontFamily: "'Montserrat', sans-serif",
-                color: "#FF6B35",
-              }}
-            >
-              CONSULT
-            </span>
-          </Link>
+          <LogoText
+            theme="auto"
+            size="md"
+            onClick={() => document.getElementById("home")?.scrollIntoView({ behavior: "smooth" })}
+          />
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-8">
