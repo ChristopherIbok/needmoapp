@@ -6,6 +6,8 @@ import { useLocation } from "@/hooks/useLocation";
 export default function ContactSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const { locationData, loading } = useLocation();
+  const [currentTime, setCurrentTime] = useState<string>("");
+  const [timezoneAbbr, setTimezoneAbbr] = useState<string>("");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -13,6 +15,41 @@ export default function ContactSection() {
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    const tz = locationData.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const update = () => {
+      try {
+        const now = new Date();
+        const time = new Intl.DateTimeFormat("en-US", {
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: true,
+          timeZone: tz,
+        }).format(now);
+        const tzString = now.toLocaleTimeString("en-US", {
+          timeZoneName: "short",
+          timeZone: tz,
+        });
+        const abbr = tzString.split(" ").pop() || "";
+        setCurrentTime(time);
+        setTimezoneAbbr(abbr);
+      } catch {
+        const now = new Date();
+        setCurrentTime(
+          new Intl.DateTimeFormat("en-US", {
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+          }).format(now)
+        );
+        setTimezoneAbbr("");
+      }
+    };
+    update();
+    const id = setInterval(update, 60000);
+    return () => clearInterval(id);
+  }, [locationData.timezone]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -90,7 +127,7 @@ export default function ContactSection() {
               </span>
 
               <h2
-                className="font-black text-white mb-6"
+                className="contact-headline font-black text-white mb-6"
                 style={{
                   fontFamily: "'Montserrat', sans-serif",
                   fontSize: "clamp(1.8rem, 3.5vw, 2.5rem)",
@@ -102,14 +139,14 @@ export default function ContactSection() {
               </h2>
 
               <p
-                className="text-white/80 mb-8 max-w-lg"
+                className="contact-subheadline text-white/80 mb-8 max-w-lg"
                 style={{ fontSize: "1.1rem", lineHeight: "1.7" }}
               >
                 Whether you&apos;re starting from scratch or ready to scale, we&apos;d love to learn about your goals and show you how we can help.
               </p>
 
               {/* Contact info */}
-              <div className="space-y-4 mb-8">
+              <div className="contact-info space-y-4 mb-8">
                 <a
                   href="mailto:hello@needmoconsult.com"
                   className="flex items-center gap-3 text-white/80 hover:text-white transition-colors duration-200 group"
@@ -133,7 +170,7 @@ export default function ContactSection() {
                   >
                     📞
                   </span>
-                  <span>+1 (555) 000-0000</span>
+                  <span>+234 (706) 898-4590</span>
                 </div>
 
                 <div className="flex items-center gap-3 text-white/80">
@@ -150,18 +187,27 @@ export default function ContactSection() {
 
               {/* Timezone message */}
               <div
-                className="rounded-xl p-4"
+                className="rounded-xl p-4 contact-timezone"
                 style={{ background: "rgba(255,255,255,0.1)" }}
                 aria-live="polite"
               >
-                <p className="text-white/70 text-sm italic mb-1">
-                  {loading
-                    ? "Detecting your timezone..."
-                    : `Your local time: ${locationData.localTime}`}
-                </p>
+                <div className="timezone-info">
+                  <p className="user-time">
+                    {loading ? (
+                      <span className="text-white/70 text-sm italic">Detecting your timezone...</span>
+                    ) : (
+                      <>
+                        Your local time:{" "}
+                        <span id="currentTime">{currentTime || locationData.localTime}</span>{" "}
+                        {timezoneAbbr && <span id="timezone">{timezoneAbbr}</span>}
+                      </>
+                    )}
+                  </p>
+                </div>
                 <p className="text-white/60 text-sm">
                   Our team typically responds within 24 hours.
                 </p>
+                <p className="business-hours-message text-sm mt-1" aria-live="polite" />
               </div>
             </div>
           </div>
@@ -186,7 +232,7 @@ export default function ContactSection() {
                     role="alert"
                     aria-live="assertive"
                   >
-                    <div className="text-5xl mb-4">🎉</div>
+                    <div className="text-5xl mb-4"></div>
                     <h4
                       className="font-bold text-[#1A2332] mb-2"
                       style={{ fontFamily: "'Montserrat', sans-serif", fontSize: "1.2rem" }}
@@ -280,7 +326,7 @@ export default function ContactSection() {
 
                       <button
                         type="submit"
-                        className="w-full py-4 px-6 rounded-lg font-bold text-white transition-all duration-200 hover:scale-[1.02] hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B35] focus-visible:ring-offset-2"
+                        className="contact-cta w-full py-4 px-6 rounded-lg font-bold text-white transition-all duration-200 hover:scale-[1.02] hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B35] focus-visible:ring-offset-2"
                         style={{
                           backgroundColor: "#FF6B35",
                           fontFamily: "'Montserrat', sans-serif",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation } from "@/hooks/useLocation";
 
 const packages = [
@@ -69,6 +69,8 @@ const packages = [
 export default function PricingSection() {
   const { locationData, loading, convertPrice } = useLocation();
   const sectionRef = useRef<HTMLElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -94,6 +96,31 @@ export default function PricingSection() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const card = el.querySelector<HTMLElement>(".pricing-card");
+      if (!card) return;
+      const gap = 20;
+      const full = card.offsetWidth + gap;
+      const idx = Math.round(el.scrollLeft / full);
+      setActiveIndex(Math.max(0, Math.min(packages.length - 1, idx)));
+    };
+    el.addEventListener("scroll", onScroll, { passive: true } as any);
+    return () => el.removeEventListener("scroll", onScroll as any);
+  }, []);
+
+  const scrollToIndex = (idx: number) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const card = el.querySelector<HTMLElement>(".pricing-card");
+    if (!card) return;
+    const gap = 20;
+    const full = card.offsetWidth + gap;
+    el.scrollTo({ left: idx * full, behavior: "smooth" });
+  };
+
   const handleScrollToContact = () => {
     document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
   };
@@ -115,28 +142,32 @@ export default function PricingSection() {
           </p>
         </div>
 
-        {/* Currency note */}
-        <div className="text-right mb-8 reveal">
+        <div className="text-center mb-4 reveal">
           <span
             className="text-sm italic text-[#666666] dark:text-gray-400"
             aria-live="polite"
           >
             {loading
               ? "Loading pricing..."
-              : `Prices shown in ${locationData.currency} based on your location`}
+              : locationData.currency === "USD"
+              ? "Prices shown in USD"
+              : `Prices shown in ${locationData.currency} (converted from USD)`}
           </span>
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 items-start">
+        <div
+          ref={scrollRef}
+          className="pricing-container items-start"
+        >
           {packages.map((pkg, index) => (
             <article
               key={pkg.name}
-              className={`pricing-card-item reveal ${pkg.featured ? "pricing-featured" : ""}`}
+              className={`pricing-card pricing-card-item reveal ${pkg.featured ? "pricing-featured" : ""}`}
               style={{ transitionDelay: `${index * 150}ms` }}
             >
               <div
-                className={`relative h-full rounded-2xl p-8 transition-all duration-300 ${
+                className={`relative h-full rounded-2xl p-[30px] md:p-8 transition-all duration-300 ${
                   pkg.featured
                     ? "bg-white dark:bg-[#1E2830] border-2 border-[#FF6B35] shadow-2xl"
                     : "bg-white dark:bg-[#1E2830] border-2 border-[#E0E0E0] dark:border-[#2A3540] shadow-md hover:border-[#FF6B35] hover:shadow-xl"
@@ -171,7 +202,6 @@ export default function PricingSection() {
                   {pkg.target}
                 </p>
 
-                {/* Price */}
                 <div className="mb-2">
                   <div className="flex items-baseline gap-1">
                     <span
@@ -219,7 +249,7 @@ export default function PricingSection() {
                 {/* CTA Button */}
                 <button
                   onClick={handleScrollToContact}
-                  className={`w-full py-3 px-6 rounded-lg font-bold text-sm transition-all duration-200 hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B35] ${
+                  className={`w-full py-3 px-6 rounded-lg font-bold text-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B35] ${
                     pkg.featured
                       ? "bg-[#FF6B35] text-white hover:bg-[#E55A2B] shadow-lg"
                       : "bg-[#FF6B35] text-white hover:bg-[#E55A2B]"
@@ -231,6 +261,18 @@ export default function PricingSection() {
                 </button>
               </div>
             </article>
+          ))}
+        </div>
+
+        {/* Dots indicator */}
+        <div className="pricing-dots md:hidden mt-3 flex justify-center gap-2">
+          {packages.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => scrollToIndex(i)}
+              aria-label={`View package ${i + 1}`}
+              className={`dot ${activeIndex === i ? "active" : ""}`}
+            />
           ))}
         </div>
 

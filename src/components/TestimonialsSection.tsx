@@ -31,6 +31,7 @@ const testimonials = [
 
 export default function TestimonialsSection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
@@ -57,13 +58,28 @@ export default function TestimonialsSection() {
     return () => observer.disconnect();
   }, []);
 
-  // Auto-rotate on mobile
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
-    return () => clearInterval(interval);
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const slide = el.querySelector<HTMLElement>(".testimonial-slide");
+      if (!slide) return;
+      const width = slide.offsetWidth;
+      const idx = Math.round(el.scrollLeft / width);
+      setActiveIndex(Math.max(0, Math.min(testimonials.length - 1, idx)));
+    };
+    el.addEventListener("scroll", onScroll as any, { passive: true } as any);
+    return () => el.removeEventListener("scroll", onScroll as any);
   }, []);
+
+  const scrollToIndex = (idx: number) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const slide = el.querySelector<HTMLElement>(".testimonial-slide");
+    if (!slide) return;
+    const width = slide.offsetWidth;
+    el.scrollTo({ left: idx * width, behavior: "smooth" });
+  };
 
   return (
     <section
@@ -138,73 +154,59 @@ export default function TestimonialsSection() {
           ))}
         </div>
 
-        {/* Mobile: Carousel */}
         <div className="md:hidden mb-8">
-          <div className="overflow-hidden">
-            <div
-              className="flex transition-transform duration-500 ease-in-out"
-              style={{ transform: `translateX(-${activeIndex * 100}%)` }}
-            >
-              {testimonials.map((testimonial) => (
-                <div
-                  key={testimonial.name}
-                  className="w-full flex-shrink-0 px-2"
-                >
-                  <div className="bg-white dark:bg-[#1E2830] rounded-xl p-8 shadow-md">
+          <div
+            ref={scrollRef}
+            className="testimonials-container"
+          >
+            {testimonials.map((testimonial) => (
+              <div key={testimonial.name} className="testimonial-slide">
+                <div className="bg-white dark:bg-[#1E2830] rounded-xl p-[25px] shadow-md">
+                  <div
+                    className="mb-3"
+                    style={{ color: "#FF6B35", fontFamily: "Georgia, serif", fontSize: "36px", lineHeight: "1" }}
+                    aria-hidden="true"
+                  >
+                    &ldquo;
+                  </div>
+                  <blockquote
+                    className="text-[#333333] dark:text-[#E0E0E0] italic mb-6"
+                    style={{ fontSize: "1rem", lineHeight: "1.7" }}
+                  >
+                    {testimonial.quote}
+                  </blockquote>
+                  <div className="stars mb-4" aria-label="5 out of 5 stars">★★★★★</div>
+                  <div className="flex items-center gap-3">
                     <div
-                      className="text-5xl font-black leading-none mb-4"
-                      style={{ color: "#FF6B35", fontFamily: "Georgia, serif" }}
+                      className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
+                      style={{ backgroundColor: testimonial.color }}
                       aria-hidden="true"
                     >
-                      &ldquo;
+                      {testimonial.initials}
                     </div>
-                    <blockquote
-                      className="text-[#333333] dark:text-[#E0E0E0] italic mb-6"
-                      style={{ fontSize: "1rem", lineHeight: "1.7" }}
-                    >
-                      {testimonial.quote}
-                    </blockquote>
-                    <div className="stars mb-4" aria-label="5 out of 5 stars">★★★★★</div>
-                    <div className="flex items-center gap-3">
+                    <div>
                       <div
-                        className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-                        style={{ backgroundColor: testimonial.color }}
-                        aria-hidden="true"
+                        className="font-bold text-[#1A2332] dark:text-white"
+                        style={{ fontFamily: "'Montserrat', sans-serif" }}
                       >
-                        {testimonial.initials}
+                        {testimonial.name}
                       </div>
-                      <div>
-                        <div
-                          className="font-bold text-[#1A2332] dark:text-white"
-                          style={{ fontFamily: "'Montserrat', sans-serif" }}
-                        >
-                          {testimonial.name}
-                        </div>
-                        <div className="text-sm text-[#666666] dark:text-gray-400">
-                          {testimonial.title}
-                        </div>
+                      <div className="text-sm text-[#666666] dark:text-gray-400">
+                        {testimonial.title}
                       </div>
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
-
-          {/* Carousel dots */}
-          <div className="flex justify-center gap-2 mt-4" role="tablist" aria-label="Testimonial navigation">
+          <div className="flex justify-center gap-2 mt-4">
             {testimonials.map((_, index) => (
               <button
                 key={index}
-                onClick={() => setActiveIndex(index)}
-                role="tab"
-                aria-selected={activeIndex === index}
+                onClick={() => scrollToIndex(index)}
                 aria-label={`View testimonial ${index + 1}`}
-                className={`w-2 h-2 rounded-full transition-all duration-200 ${
-                  activeIndex === index
-                    ? "w-6 bg-[#FF6B35]"
-                    : "bg-gray-300 dark:bg-gray-600"
-                }`}
+                className={`w-2 h-2 rounded-full transition-all duration-200 ${activeIndex === index ? "w-6 bg-[#FF6B35]" : "bg-gray-300 dark:bg-gray-600"}`}
               />
             ))}
           </div>

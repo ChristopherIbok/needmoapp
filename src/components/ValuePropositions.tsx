@@ -84,7 +84,7 @@ export default function ValuePropositions() {
               >
                 {/* Icon */}
                 <div
-                  className="reveal-scale inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-5 text-3xl"
+                  className="value-icon reveal-scale inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-5 text-3xl"
                   style={{
                     background: "rgba(255, 107, 53, 0.12)",
                     transitionDelay: `${index * 200}ms`,
@@ -96,7 +96,7 @@ export default function ValuePropositions() {
 
                 {/* Headline */}
                 <h3
-                  className="font-bold text-[#1A2332] dark:text-white mb-4"
+                  className="value-headline font-bold text-[#1A2332] dark:text-white mb-4"
                   style={{
                     fontFamily: "'Montserrat', sans-serif",
                     fontSize: "1.5rem",
@@ -107,7 +107,7 @@ export default function ValuePropositions() {
 
                 {/* Description */}
                 <p
-                  className="text-[#333333] dark:text-[#E0E0E0] max-w-xs mx-auto md:mx-0"
+                  className="value-text text-[#333333] dark:text-[#E0E0E0] mx-auto md:mx-0"
                   style={{ fontSize: "1rem", lineHeight: "1.7" }}
                 >
                   {value.description}

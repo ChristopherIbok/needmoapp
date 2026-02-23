@@ -83,12 +83,16 @@ export default function RootLayout({
             __html: `
               (function() {
                 try {
-                  var stored = localStorage.getItem('needmo-theme');
+                  var stored = localStorage.getItem('needmo-theme-preference') || localStorage.getItem('needmo-theme');
                   var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  var theme = stored || (prefersDark ? 'dark' : 'light');
+                  var theme = (stored === 'auto' || !stored) ? (prefersDark ? 'dark' : 'light') : stored;
+                  var root = document.documentElement;
                   if (theme === 'dark') {
-                    document.documentElement.classList.add('dark');
+                    root.classList.add('dark');
+                  } else {
+                    root.classList.remove('dark');
                   }
+                  root.setAttribute('data-theme', theme);
                 } catch(e) {}
               })();
             `,

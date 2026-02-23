@@ -81,8 +81,7 @@ export default function ServicesSection() {
           </p>
         </div>
 
-        {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 md:gap-6 mb-12">
           {services.map((service, index) => (
             <article
               key={service.headline}
@@ -90,12 +89,12 @@ export default function ServicesSection() {
               style={{ transitionDelay: `${index * 150}ms` }}
             >
               <div
-                className="h-full bg-white dark:bg-[#1E2830] border border-[#E0E0E0] dark:border-[#2A3540] rounded-xl p-10 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer"
+                className="service-card-inner h-full bg-white dark:bg-[#1E2830] border border-[#E0E0E0] dark:border-[#2A3540] rounded-xl p-[30px] md:p-10 shadow-sm hover:shadow-xl transition-all duration-300 md:hover:-translate-y-2 cursor-pointer"
                 role="article"
               >
                 {/* Icon */}
                 <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-6"
+                  className="w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center text-2xl mb-6"
                   style={{ background: "rgba(255, 107, 53, 0.12)" }}
                   aria-hidden="true"
                 >
@@ -104,7 +103,7 @@ export default function ServicesSection() {
 
                 {/* Headline */}
                 <h3
-                  className="font-bold text-[#1A2332] dark:text-white mb-3"
+                  className="font-bold text-[#1A2332] dark:text-white mb-3 text-[1.2rem] md:text-[1.3rem]"
                   style={{
                     fontFamily: "'Montserrat', sans-serif",
                     fontSize: "1.3rem",

@@ -39,7 +39,8 @@ const CURRENCY_MAP: Record<string, { currency: string; symbol: string }> = {
 };
 
 // Approximate exchange rates (USD base)
-const EXCHANGE_RATES: Record<string, number> = {
+type ExchangeRates = Record<string, number>;
+const EXCHANGE_RATES_DEFAULT: ExchangeRates = {
   USD: 1,
   GBP: 0.79,
   EUR: 0.92,
@@ -60,6 +61,36 @@ const EXCHANGE_RATES: Record<string, number> = {
   SGD: 1.34,
   HKD: 7.82,
 };
+
+function readCachedRates(): ExchangeRates | null {
+  try {
+    const cached = localStorage.getItem("exchangeRates");
+    const ts = localStorage.getItem("ratesLastUpdated");
+    if (!cached || !ts) return null;
+    const hours = (Date.now() - parseInt(ts, 10)) / (1000 * 60 * 60);
+    if (hours < 24) return JSON.parse(cached) as ExchangeRates;
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+async function fetchRatesUSDBase(): Promise<ExchangeRates> {
+  const cached = readCachedRates();
+  if (cached) return cached;
+  try {
+    const response = await fetch("https://api.exchangerate-api.com/v4/latest/USD", { cache: "no-store" });
+    const data = await response.json();
+    if (data && data.rates) {
+      localStorage.setItem("exchangeRates", JSON.stringify(data.rates));
+      localStorage.setItem("ratesLastUpdated", Date.now().toString());
+      return data.rates as ExchangeRates;
+    }
+  } catch {
+    // ignore; will fall back
+  }
+  return { ...EXCHANGE_RATES_DEFAULT };
+}
 
 const REGION_NAMES: Record<string, string> = {
   US: "North America",
@@ -154,34 +185,202 @@ export function useLocation() {
     localTime: "",
   }));
   const [loading, setLoading] = useState(true);
+  const [rates, setRates] = useState<ExchangeRates>(() => {
+    if (typeof window === "undefined") return { ...EXCHANGE_RATES_DEFAULT };
+    return readCachedRates() || { ...EXCHANGE_RATES_DEFAULT };
+  });
 
   useEffect(() => {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const data = buildLocationData(timezone);
+    const cached = typeof window !== "undefined" ? sessionStorage.getItem("userLocation") : null;
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached) as any;
+        const code = (parsed.countryCode || parsed.country || "US") as string;
+        const upper = code.toUpperCase();
+        const info = CURRENCY_MAP[upper] || { currency: "USD", symbol: "$" };
+        const region =
+          parsed.city && parsed.countryName
+            ? `${parsed.city}, ${parsed.countryName}`
+            : REGION_NAMES[upper] || "your area";
+        setLocationData({
+          region,
+          country: upper,
+          currency: info.currency,
+          currencySymbol: info.symbol,
+          timezone: parsed.timezone || timezone,
+          localTime: getLocalTime(parsed.timezone || timezone),
+        });
+        setLoading(false);
+      } catch {}
+    } else {
+      const initial = buildLocationData(timezone);
+      setLocationData(initial);
+      setLoading(false);
+    }
 
-    setLocationData(data);
-    setLoading(false);
+    const geolocate = () => {
+      if (!("geolocation" in navigator)) {
+        detectByIP();
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          try {
+            const lat = pos.coords.latitude;
+            const lon = pos.coords.longitude;
+            const resp = await fetch(
+              `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`,
+              { cache: "no-store" }
+            );
+            const data = await resp.json();
+            const countryCode = (data.countryCode || "US").toUpperCase();
+            const countryName = data.countryName || countryCode;
+            const city = data.city || data.locality || "";
+            const info = CURRENCY_MAP[countryCode] || { currency: "USD", symbol: "$" };
+            const region = city && countryName ? `${city}, ${countryName}` : REGION_NAMES[countryCode] || "your area";
+            const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const payload = {
+              city,
+              regionName: data.principalSubdivision || "",
+              countryName,
+              countryCode,
+              timezone: tz,
+              lat,
+              lon,
+            };
+            sessionStorage.setItem("userLocation", JSON.stringify(payload));
+            setLocationData({
+              region,
+              country: countryCode,
+              currency: info.currency,
+              currencySymbol: info.symbol,
+              timezone: tz,
+              localTime: getLocalTime(tz),
+            });
+          } catch {
+            detectByIP();
+          }
+        },
+        () => {
+          detectByIP();
+        },
+        { maximumAge: 600000, timeout: 8000 }
+      );
+    };
 
-    // Update time every minute
+    const detectByIP = async () => {
+      try {
+        const r1 = await fetch("https://ipapi.co/json/", { cache: "no-store" });
+        if (r1.ok) {
+          const d = await r1.json();
+          const countryCode = (d.country_code || "US").toUpperCase();
+          const countryName = d.country_name || countryCode;
+          const city = d.city || "";
+          const info = CURRENCY_MAP[countryCode] || { currency: "USD", symbol: "$" };
+          const tz = d.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+          const region = city && countryName ? `${city}, ${countryName}` : REGION_NAMES[countryCode] || "your area";
+          const payload = {
+            city,
+            regionName: d.region || d.region_code || "",
+            countryName,
+            countryCode,
+            timezone: tz,
+            lat: d.latitude || d.lat || null,
+            lon: d.longitude || d.lon || null,
+          };
+          sessionStorage.setItem("userLocation", JSON.stringify(payload));
+          setLocationData({
+            region,
+            country: countryCode,
+            currency: info.currency,
+            currencySymbol: info.symbol,
+            timezone: tz,
+            localTime: getLocalTime(tz),
+          });
+          setLoading(false);
+          return;
+        }
+        throw new Error("ipapi failed");
+      } catch {
+        if (window.location.protocol === "http:") {
+          try {
+            const r2 = await fetch("http://ip-api.com/json/", { cache: "no-store" } as any);
+            if (r2.ok) {
+              const d = await r2.json();
+              if (d.status === "success") {
+                const countryCode = (d.countryCode || "US").toUpperCase();
+                const countryName = d.country || countryCode;
+                const city = d.city || "";
+                const info = CURRENCY_MAP[countryCode] || { currency: "USD", symbol: "$" };
+                const tz = d.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+                const region =
+                  city && countryName ? `${city}, ${countryName}` : REGION_NAMES[countryCode] || "your area";
+                const payload = {
+                  city,
+                  regionName: d.regionName || d.region || "",
+                  countryName,
+                  countryCode,
+                  timezone: tz,
+                  lat: d.lat || null,
+                  lon: d.lon || null,
+                };
+                sessionStorage.setItem("userLocation", JSON.stringify(payload));
+                setLocationData({
+                  region,
+                  country: countryCode,
+                  currency: info.currency,
+                  currencySymbol: info.symbol,
+                  timezone: tz,
+                  localTime: getLocalTime(tz),
+                });
+                setLoading(false);
+                return;
+              }
+            }
+          } catch {}
+        }
+        const fallback = buildLocationData(timezone);
+        setLocationData(fallback);
+        setLoading(false);
+      }
+    };
+
+    geolocate();
+
     const interval = setInterval(() => {
       setLocationData((prev) => ({
         ...prev,
-        localTime: getLocalTime(timezone),
+        localTime: getLocalTime(prev.timezone || timezone),
       }));
     }, 60000);
-
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    fetchRatesUSDBase().then((r) => setRates(r));
+  }, []);
+
+  const roundForDisplay = (value: number): number => {
+    if (value < 100) return Math.round(value / 10) * 10;
+    if (value < 1000) return Math.round(value / 50) * 50;
+    return Math.round(value / 100) * 100;
+  };
+
   const convertPrice = (usdPrice: number): string => {
-    const rate = EXCHANGE_RATES[locationData.currency] || 1;
-    const converted = Math.round(usdPrice * rate);
-
-    if (locationData.currency === "JPY" || locationData.currency === "KES" || locationData.currency === "NGN") {
-      return `${locationData.currencySymbol}${converted.toLocaleString()}`;
+    const rate = rates[locationData.currency] || EXCHANGE_RATES_DEFAULT[locationData.currency] || 1;
+    const converted = usdPrice * rate;
+    const rounded = roundForDisplay(converted);
+    try {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: locationData.currency,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      }).format(rounded);
+    } catch {
+      return `${locationData.currencySymbol}${Math.round(rounded).toLocaleString()}`;
     }
-
-    return `${locationData.currencySymbol}${converted.toLocaleString()}`;
   };
 
   return { locationData, loading, convertPrice };

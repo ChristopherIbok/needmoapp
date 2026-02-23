@@ -24,7 +24,7 @@ export default function HeroSection() {
     <section
       id="home"
       aria-label="Hero section"
-      className="relative min-h-screen md:min-h-screen flex items-center overflow-hidden grid-pattern"
+      className="hero-section relative min-h-screen md:min-h-screen flex items-center overflow-hidden grid-pattern"
       style={{
         background: "linear-gradient(180deg, #FFFFFF 0%, #F7F7F7 100%)",
         minHeight: "100svh",
@@ -51,7 +51,7 @@ export default function HeroSection() {
         />
       </div>
 
-      <div className="container-custom relative z-10 w-full pt-24 pb-16 md:pt-32 md:pb-20">
+      <div className="container-custom relative z-10 w-full pt-10 pb-10 md:pt-32 md:pb-20">
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
           {/* Left side - Text content (60%) */}
           <div className="flex-1 lg:max-w-[60%] text-center lg:text-left">
@@ -61,7 +61,7 @@ export default function HeroSection() {
               style={{ transitionDelay: "0ms" }}
             >
               <span
-                className="inline-block text-[0.9rem] font-semibold uppercase tracking-[2px] mb-6"
+                className="location-text inline-block text-[0.9rem] font-semibold uppercase tracking-[2px] mb-6"
                 style={{ color: "#FF6B35" }}
                 aria-live="polite"
               >
@@ -75,7 +75,7 @@ export default function HeroSection() {
               style={{ transitionDelay: "100ms" }}
             >
               <h1
-                className="font-black leading-tight mb-6 text-[#1A2332] dark:text-white"
+                className="headline font-black leading-tight mb-6 text-[#1A2332] dark:text-white"
                 style={{
                   fontFamily: "'Montserrat', sans-serif",
                   fontSize: "clamp(2.5rem, 5vw, 3.5rem)",
@@ -93,7 +93,7 @@ export default function HeroSection() {
               style={{ transitionDelay: "300ms" }}
             >
               <p
-                className="text-[#333333] dark:text-[#E0E0E0] mb-8 max-w-2xl mx-auto lg:mx-0"
+                className="subheadline text-[#333333] dark:text-[#E0E0E0] mb-8 max-w-2xl mx-auto lg:mx-0"
                 style={{
                   fontSize: "clamp(1rem, 1.5vw, 1.2rem)",
                   lineHeight: "1.7",
@@ -105,7 +105,7 @@ export default function HeroSection() {
 
             {/* CTA Buttons */}
             <div
-              className={`flex flex-col sm:flex-row gap-4 justify-center lg:justify-start transition-all duration-700 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              className={`cta-group flex flex-col sm:flex-row gap-4 justify-center lg:justify-start transition-all duration-700 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{ transitionDelay: "500ms" }}
             >
               <button
@@ -152,7 +152,7 @@ export default function HeroSection() {
 
           {/* Right side - Visual (40%) */}
           <div
-            className={`flex-shrink-0 lg:w-[40%] w-full max-w-md lg:max-w-none transition-all duration-1000 ${visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-12"}`}
+            className={`hero-visual flex-shrink-0 lg:w-[40%] w-full max-w-md lg:max-w-none transition-all duration-1000 ${visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-12"}`}
             style={{ transitionDelay: "400ms" }}
             aria-hidden="true"
           >

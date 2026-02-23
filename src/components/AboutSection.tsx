@@ -94,7 +94,7 @@ export default function AboutSection() {
             <div className="about-reveal reveal-left">
               <span className="eyebrow">Who We Are</span>
               <h2
-                className="font-black text-[#1A2332] dark:text-white mb-6"
+                className="about-headline font-black text-[#1A2332] dark:text-white mb-6 text-center lg:text-left"
                 style={{
                   fontFamily: "'Montserrat', sans-serif",
                   fontSize: "clamp(1.8rem, 3vw, 2.2rem)",
@@ -106,21 +106,21 @@ export default function AboutSection() {
               </h2>
 
               <p
-                className="text-[#333333] dark:text-[#E0E0E0] mb-8 max-w-xl"
+                className="about-text text-[#333333] dark:text-[#E0E0E0] mb-8 max-w-xl mx-auto lg:mx-0"
                 style={{ fontSize: "1.1rem", lineHeight: "1.7" }}
               >
                 NEEDMO CONSULT is a results-driven social media agency for businesses, creators, and brands that know they deserve more. We don&apos;t believe in vanity metrics. We believe in strategy, creativity, and consistency — and we measure success by the results we deliver.
               </p>
 
               <p
-                className="text-[#333333] dark:text-[#E0E0E0] mb-8 max-w-xl"
+                className="about-text text-[#333333] dark:text-[#E0E0E0] mb-8 max-w-xl mx-auto lg:mx-0"
                 style={{ fontSize: "1.1rem", lineHeight: "1.7" }}
               >
                 Whether you&apos;re a local business building your first social presence or an established brand scaling to new platforms, we&apos;re here to help you show up online with confidence, clarity, and content that actually converts.
               </p>
 
               {/* Core Values */}
-              <div className="flex flex-wrap gap-3 mb-8" role="list" aria-label="Core values">
+              <div className="about-values flex flex-wrap gap-3 mb-8" role="list" aria-label="Core values">
                 {coreValues.map((value) => (
                   <span
                     key={value}
@@ -152,7 +152,7 @@ export default function AboutSection() {
           </div>
 
           {/* Right side - Visual */}
-          <div className="flex-shrink-0 lg:w-[45%] w-full max-w-md lg:max-w-none">
+          <div className="about-visual flex-shrink-0 lg:w-[45%] w-full max-w-md lg:max-w-none">
             <div className="about-reveal reveal-right">
               {/* Stats visualization */}
               <div

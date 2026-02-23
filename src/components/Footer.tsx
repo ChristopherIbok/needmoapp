@@ -90,8 +90,7 @@ export default function Footer() {
       role="contentinfo"
       className="bg-[#1A2332] dark:bg-[#0A0F14] text-white"
     >
-      {/* Main footer content */}
-      <div className="container-custom py-16">
+      <div className="container-custom footer-main py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Column 1 - Brand */}
           <div>
@@ -134,8 +133,8 @@ export default function Footer() {
             >
               Quick Links
             </h3>
-            <nav aria-label="Footer quick links">
-              <ul className="space-y-2">
+            <nav aria-label="Footer quick links" className="footer-links">
+              <ul className="space-y-2 text-center md:text-left">
                 {quickLinks.map((link) => (
                   <li key={link.label}>
                     <button
@@ -159,8 +158,8 @@ export default function Footer() {
             >
               Services
             </h3>
-            <nav aria-label="Footer services links">
-              <ul className="space-y-2">
+            <nav aria-label="Footer services links" className="footer-links">
+              <ul className="space-y-2 text-center md:text-left">
                 {serviceLinks.map((link) => (
                   <li key={link.label}>
                     <button
@@ -206,7 +205,7 @@ export default function Footer() {
             </address>
 
             {/* Newsletter */}
-            <div>
+            <div className="footer-newsletter">
               <p className="text-gray-400 text-sm mb-3">
                 Get social media tips & insights:
               </p>
@@ -248,9 +247,8 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Bottom bar */}
       <div
-        className="border-t py-6"
+        className="footer-bottom border-t py-6"
         style={{ borderColor: "rgba(255,255,255,0.1)" }}
       >
         <div className="container-custom flex flex-col md:flex-row items-center justify-between gap-4">

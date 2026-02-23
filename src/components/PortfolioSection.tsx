@@ -237,7 +237,7 @@ export default function PortfolioSection() {
 
           {/* Filter Navigation */}
           <div
-            className="flex gap-3 mb-10 overflow-x-auto pb-2"
+            className="portfolio-filters flex gap-3 mb-10 overflow-x-auto pb-2"
             role="tablist"
             aria-label="Filter portfolio by category"
           >
@@ -261,7 +261,7 @@ export default function PortfolioSection() {
 
           {/* Portfolio Grid */}
           <div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16"
+            className="portfolio-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16"
             aria-live="polite"
             aria-label={`Showing ${filteredItems.length} portfolio items`}
           >
@@ -273,7 +273,7 @@ export default function PortfolioSection() {
                 }`}
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
-                <div className="relative h-full bg-white dark:bg-[#1E2830] border border-[#E0E0E0] dark:border-[#2A3540] rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+                <div className="relative h-full bg-white dark:bg-[#1E2830] border border-[#E0E0E0] dark:border-[#2A3540] rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 md:hover:-translate-y-2">
                   {/* Featured badge */}
                   {item.featured && (
                     <div className="absolute top-4 left-4 z-10 badge badge-orange text-xs">
@@ -347,7 +347,7 @@ export default function PortfolioSection() {
                   )}
 
                   {/* Content */}
-                  <div className="p-6">
+                  <div className="portfolio-card-padding p-6">
                     <h3
                       className="font-bold text-[#1A2332] dark:text-white mb-1"
                       style={{
@@ -434,14 +434,14 @@ export default function PortfolioSection() {
             className="rounded-2xl p-10 mb-16 reveal"
             style={{ backgroundColor: "#1A2332" }}
           >
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               {stats.map((stat, index) => (
                 <div key={stat.label} className="text-center">
                   <div className="text-4xl mb-2" aria-hidden="true">
                     {stat.icon}
                   </div>
-                  <div
-                    className="font-black text-white mb-1"
+                    <div
+                      className="stat-number font-black text-white mb-1"
                     style={{
                       fontFamily: "'Montserrat', sans-serif",
                       fontSize: "clamp(1.8rem, 3vw, 2.5rem)",
