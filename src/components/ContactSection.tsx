@@ -15,6 +15,10 @@ export default function ContactSection() {
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [businessMsg, setBusinessMsg] = useState<{ text: string; color: string }>({
+    text: "",
+    color: "#FFA726",
+  });
 
   useEffect(() => {
     const tz = locationData.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -50,6 +54,28 @@ export default function ContactSection() {
     const id = setInterval(update, 60000);
     return () => clearInterval(id);
   }, [locationData.timezone]);
+
+  useEffect(() => {
+    const businessTimezone = "America/Los_Angeles";
+    const compute = () => {
+      const now = new Date();
+      const hour = parseInt(
+        now.toLocaleString("en-US", { hour: "numeric", hour12: false, timeZone: businessTimezone }),
+        10
+      );
+      const day = now.toLocaleString("en-US", { weekday: "short", timeZone: businessTimezone });
+      const isWeekday = !["Sat", "Sun"].includes(day);
+      const isDuringHours = hour >= 9 && hour < 18;
+      if (isWeekday && isDuringHours) {
+        setBusinessMsg({ text: "🟢 We're online now! Expect a response within 2-4 hours.", color: "#4CAF50" });
+      } else {
+        setBusinessMsg({ text: "🟡 We're currently offline. We'll respond within 24 hours.", color: "#FFA726" });
+      }
+    };
+    compute();
+    const id = setInterval(compute, 60000);
+    return () => clearInterval(id);
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -207,7 +233,9 @@ export default function ContactSection() {
                 <p className="text-white/60 text-sm">
                   Our team typically responds within 24 hours.
                 </p>
-                <p className="business-hours-message text-sm mt-1" aria-live="polite" />
+                <p className="business-hours-message text-sm mt-1" aria-live="polite" style={{ color: businessMsg.color }}>
+                  {businessMsg.text}
+                </p>
               </div>
             </div>
           </div>

@@ -67,7 +67,7 @@ const packages = [
 ];
 
 export default function PricingSection() {
-  const { locationData, loading, convertPrice } = useLocation();
+  const { locationData, loading, convertPrice, setPreferredCurrency } = useLocation();
   const sectionRef = useRef<HTMLElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -134,7 +134,22 @@ export default function PricingSection() {
     >
       <div className="container-custom">
         {/* Section Header */}
-        <div className="text-center mb-4 reveal">
+        <div className="text-center mb-4 reveal relative">
+          {/* Optional currency selector */}
+          <div className="absolute right-0 top-0 hidden sm:block">
+            <label htmlFor="currencySelector" className="sr-only">Currency</label>
+            <select
+              id="currencySelector"
+              className="currency-select text-sm px-3 py-1.5 rounded border border-[#E0E0E0] dark:border-[#2A3540] bg-white dark:bg-[#1E2830] text-[#1A2332] dark:text-white"
+              value={locationData.currency}
+              onChange={(e) => setPreferredCurrency(e.target.value)}
+              aria-label="Select currency"
+            >
+              {["USD","EUR","GBP","CAD","AUD","NGN","KES","JPY","INR","ZAR","BRL","MXN"].map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+          </div>
           <span className="eyebrow">Transparent Pricing</span>
           <h2 className="section-heading">Choose Your Package</h2>
           <p className="section-subheading mx-auto mb-4">

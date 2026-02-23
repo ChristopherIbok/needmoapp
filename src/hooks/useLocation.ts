@@ -189,6 +189,10 @@ export function useLocation() {
     if (typeof window === "undefined") return { ...EXCHANGE_RATES_DEFAULT };
     return readCachedRates() || { ...EXCHANGE_RATES_DEFAULT };
   });
+  const [preferredCurrency, setPreferredCurrencyState] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
+    return localStorage.getItem("preferredCurrency");
+  });
 
   useEffect(() => {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -206,7 +210,7 @@ export function useLocation() {
         setLocationData({
           region,
           country: upper,
-          currency: info.currency,
+          currency: preferredCurrency || info.currency,
           currencySymbol: info.symbol,
           timezone: parsed.timezone || timezone,
           localTime: getLocalTime(parsed.timezone || timezone),
@@ -215,7 +219,10 @@ export function useLocation() {
       } catch {}
     } else {
       const initial = buildLocationData(timezone);
-      setLocationData(initial);
+      setLocationData({
+        ...initial,
+        currency: preferredCurrency || initial.currency,
+      });
       setLoading(false);
     }
 
@@ -253,7 +260,7 @@ export function useLocation() {
             setLocationData({
               region,
               country: countryCode,
-              currency: info.currency,
+              currency: preferredCurrency || info.currency,
               currencySymbol: info.symbol,
               timezone: tz,
               localTime: getLocalTime(tz),
@@ -293,7 +300,7 @@ export function useLocation() {
           setLocationData({
             region,
             country: countryCode,
-            currency: info.currency,
+            currency: preferredCurrency || info.currency,
             currencySymbol: info.symbol,
             timezone: tz,
             localTime: getLocalTime(tz),
@@ -329,7 +336,7 @@ export function useLocation() {
                 setLocationData({
                   region,
                   country: countryCode,
-                  currency: info.currency,
+                  currency: preferredCurrency || info.currency,
                   currencySymbol: info.symbol,
                   timezone: tz,
                   localTime: getLocalTime(tz),
@@ -341,7 +348,10 @@ export function useLocation() {
           } catch {}
         }
         const fallback = buildLocationData(timezone);
-        setLocationData(fallback);
+        setLocationData({
+          ...fallback,
+          currency: preferredCurrency || fallback.currency,
+        });
         setLoading(false);
       }
     };
@@ -355,7 +365,7 @@ export function useLocation() {
       }));
     }, 60000);
     return () => clearInterval(interval);
-  }, []);
+  }, [preferredCurrency]);
 
   useEffect(() => {
     fetchRatesUSDBase().then((r) => setRates(r));
@@ -383,5 +393,16 @@ export function useLocation() {
     }
   };
 
-  return { locationData, loading, convertPrice };
+  const setPreferredCurrency = (currency: string) => {
+    setPreferredCurrencyState(currency);
+    try {
+      localStorage.setItem("preferredCurrency", currency);
+    } catch {}
+    setLocationData((prev) => ({
+      ...prev,
+      currency,
+    }));
+  };
+
+  return { locationData, loading, convertPrice, setPreferredCurrency };
 }
