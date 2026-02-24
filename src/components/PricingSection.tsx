@@ -217,24 +217,29 @@ export default function PricingSection() {
                   {pkg.target}
                 </p>
 
-                <div className="mb-2">
-                  <div className="flex items-baseline gap-1">
+                <div className="mb-2 min-h-[4.5rem]">
+                  <div className="flex items-baseline gap-1 flex-wrap">
                     <span
                       className="font-black text-[#1A2332] dark:text-white"
                       style={{
                         fontFamily: "'Montserrat', sans-serif",
-                        fontSize: "2.5rem",
+                        fontSize: "2rem",
                       }}
                     >
                       {loading ? "..." : convertPrice(pkg.priceUSD.low)}
                     </span>
+                    <span className="text-[#666666] dark:text-gray-400 text-sm">–</span>
+                    <span
+                      className="font-black text-[#1A2332] dark:text-white"
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontSize: "2rem",
+                      }}
+                    >
+                      {loading ? "" : convertPrice(pkg.priceUSD.high)}
+                    </span>
                     <span className="text-[#666666] dark:text-gray-400 text-sm">/mo</span>
                   </div>
-                  <p className="text-sm text-[#666666] dark:text-gray-400">
-                    {loading
-                      ? ""
-                      : `or ${convertPrice(pkg.priceUSD.low)}–${convertPrice(pkg.priceUSD.high)}/mo`}
-                  </p>
                 </div>
 
                 {/* Divider */}
