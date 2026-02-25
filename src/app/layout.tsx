@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Montserrat, Inter } from "next/font/google";
 import "./globals.css";
+import EmailPopup from "@/components/EmailPopup";
+import { ThemeProvider } from "@/components/ThemeProvider"; // Create this component
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -51,7 +53,6 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-
   openGraph: {
     title: `${SITE_NAME} | Your Brand Deserves More`,
     description:
@@ -60,7 +61,7 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     images: [
       {
-        url: "/og-image.jpg", // Make sure this exists
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "NEEDMO CONSULT - Social Media Agency",
@@ -69,17 +70,15 @@ export const metadata: Metadata = {
     locale: "en_US",
     type: "website",
   },
-
   twitter: {
     card: "summary_large_image",
     title: `${SITE_NAME} | Your Brand Deserves More`,
     description:
       "Strategic social media management for businesses, creators, and brands that know they deserve more.",
-    images: ["/twitter-image.jpg"], // Make sure this exists
-    creator: "@needmoconsult", // Add your Twitter handle
-    site: "@needmoconsult", // Add your Twitter handle
+    images: ["/twitter-image.jpg"],
+    creator: "@needmoconsult",
+    site: "@needmoconsult",
   },
-
   robots: {
     index: true,
     follow: true,
@@ -91,7 +90,6 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
@@ -113,20 +111,15 @@ export const metadata: Metadata = {
       },
     ],
   },
-
   manifest: "/manifest.json",
-
   appleWebApp: {
     capable: true,
     title: SITE_NAME,
     statusBarStyle: "default",
   },
-
   verification: {
-    google: "your-google-verification-code", // Add your Google Search Console verification
-    // Add other verification codes as needed
+    google: "your-google-verification-code",
   },
-
   category: "marketing",
 };
 
@@ -181,7 +174,7 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://www.youtube.com" />
         <link rel="dns-prefetch" href="https://vimeo.com" />
 
-        {/* Theme initialization script */}
+        {/* Simplified theme initialization script */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -190,20 +183,14 @@ export default function RootLayout({
                   // Get stored preference
                   var stored = localStorage.getItem('needmo-theme-preference') || localStorage.getItem('needmo-theme');
                   
-                  // Default to 'system' if no preference stored
+                  // Determine theme
                   var theme = stored || 'system';
-                  
-                  // Determine actual theme
                   var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  var actualTheme;
+                  var actualTheme = theme === 'system' || theme === 'auto' 
+                    ? (prefersDark ? 'dark' : 'light')
+                    : theme;
                   
-                  if (theme === 'system' || theme === 'auto') {
-                    actualTheme = prefersDark ? 'dark' : 'light';
-                  } else {
-                    actualTheme = theme;
-                  }
-                  
-                  // Apply theme to document
+                  // Apply theme to root element
                   var root = document.documentElement;
                   root.classList.remove('light', 'dark');
                   root.classList.add(actualTheme);
@@ -211,12 +198,10 @@ export default function RootLayout({
                   
                   // Store for CSS variables
                   root.setAttribute('data-theme', actualTheme);
-                  root.setAttribute('data-theme-preference', theme);
                   
-                  // Set initial background color to prevent flash
-                  document.body.style.backgroundColor = actualTheme === 'dark' ? '#0F1419' : '#FFFFFF';
+                  // Remove inline body background - let CSS handle it
                 } catch(e) {
-                  // Fallback to light theme if error
+                  // Fallback
                   document.documentElement.classList.add('light');
                   document.documentElement.style.colorScheme = 'light';
                 }
@@ -225,20 +210,22 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-        {/* Skip to main content link for accessibility */}
-        <a
-          href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-white focus:z-50"
-        >
-          Skip to main content
-        </a>
+      <body className="antialiased min-h-screen bg-white dark:bg-[#0A0A0A] text-gray-900 dark:text-gray-100 transition-colors duration-300">
+        <ThemeProvider>
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-white focus:z-50 focus:text-gray-900"
+          >
+            Skip to main content
+          </a>
 
-        {/* Main content */}
-        <main id="main-content">{children}</main>
+          <main id="main-content" className="outline-none">
+            {children}
+          </main>
+
+          <EmailPopup />
+        </ThemeProvider>
       </body>
     </html>
   );
 }
-
-<EmailPopup>

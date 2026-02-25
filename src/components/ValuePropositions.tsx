@@ -1,24 +1,25 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { Compass, TrendingUp, Briefcase } from "lucide-react";
 
 const values = [
   {
-    icon: "🎯",
+    icon: Compass,
     headline: "Strategy-Led",
     description:
       "We don't just post content. We build custom plans tailored to your audience, platform, and goals.",
     delay: "0ms",
   },
   {
-    icon: "📈",
+    icon: TrendingUp,
     headline: "Growth-Focused",
     description:
       "Everything we do ties to measurable outcomes — engagement, leads, sales, and ROI.",
     delay: "200ms",
   },
   {
-    icon: "🤝",
+    icon: Briefcase,
     headline: "Full-Service",
     description:
       "From content creation to paid ads and account management — we handle it all so you don't have to.",
@@ -79,43 +80,33 @@ export default function ValuePropositions() {
             {values.map((value, index) => (
               <div
                 key={value.headline}
-                className="value-item reveal text-center md:text-left"
+                className="value-item reveal text-center md:text-left group"
                 style={{ transitionDelay: `${index * 200}ms` }}
               >
-                {/* Icon */}
+                {/* Icon with hover effect */}
                 <div
-                  className="value-icon reveal-scale inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-5 text-3xl"
+                  className="value-icon reveal-scale inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-5 text-[#FF6B35] bg-[#FF6B35]/10 group-hover:bg-[#FF6B35] group-hover:text-white transition-all duration-300"
                   style={{
-                    background: "rgba(255, 107, 53, 0.12)",
                     transitionDelay: `${index * 200}ms`,
                   }}
                   aria-hidden="true"
                 >
-                  {value.icon}
+                  <value.icon size={32} strokeWidth={1.5} />
                 </div>
 
                 {/* Headline */}
-                <h3
-                  className="value-headline font-bold text-[#1A2332] dark:text-white mb-4"
-                  style={{
-                    fontFamily: "'Montserrat', sans-serif",
-                    fontSize: "1.5rem",
-                  }}
-                >
+                <h3 className="value-headline font-bold text-[#1A2332] dark:text-white mb-4 text-2xl">
                   {value.headline}
                 </h3>
 
                 {/* Description */}
-                <p
-                  className="value-text text-[#333333] dark:text-[#E0E0E0] mx-auto md:mx-0"
-                  style={{ fontSize: "1rem", lineHeight: "1.7" }}
-                >
+                <p className="value-text text-[#333333] dark:text-[#E0E0E0] mx-auto md:mx-0 leading-relaxed">
                   {value.description}
                 </p>
 
-                {/* Decorative line */}
+                {/* Decorative line - animated on hover */}
                 <div
-                  className="mt-6 h-1 w-12 rounded-full mx-auto md:mx-0"
+                  className="mt-6 h-1 w-12 rounded-full mx-auto md:mx-0 transition-all duration-300 group-hover:w-20"
                   style={{ backgroundColor: "#FF6B35" }}
                   aria-hidden="true"
                 />

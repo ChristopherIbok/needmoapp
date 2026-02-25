@@ -10,17 +10,18 @@ export default function EmailPopup() {
   const [status, setStatus] = useState<
     "idle" | "loading" | "success" | "error"
   >("idle");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      const hasSubscribed = localStorage.getItem("email-subscribed");
-      const hasClosed = sessionStorage.getItem("popup-closed");
+    const hasSubscribed = localStorage.getItem("mailchimp-subscribed");
+    if (hasSubscribed) return;
 
-      if (!hasSubscribed && !hasClosed) {
+    const timer = setTimeout(() => {
+      const hasClosed = sessionStorage.getItem("popup-closed");
+      if (!hasClosed) {
         setIsOpen(true);
       }
-    }, 5000);
+    }, 8000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -28,7 +29,7 @@ export default function EmailPopup() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("loading");
-    setErrorMessage("");
+    setMessage("");
 
     try {
       const response = await fetch("/api/subscribe-email", {
@@ -36,7 +37,7 @@ export default function EmailPopup() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, name }),
+        body: JSON.stringify({ email, name, doubleOptIn: true }), // true for double opt-in
       });
 
       const data = await response.json();
@@ -46,15 +47,16 @@ export default function EmailPopup() {
       }
 
       setStatus("success");
-      localStorage.setItem("email-subscribed", "true");
+      setMessage(data.message);
+      localStorage.setItem("mailchimp-subscribed", "true");
 
       setTimeout(() => {
         setIsOpen(false);
         setStatus("idle");
-      }, 3000);
+      }, 4000);
     } catch (error) {
       setStatus("error");
-      setErrorMessage(
+      setMessage(
         error instanceof Error ? error.message : "Something went wrong"
       );
     }
@@ -74,7 +76,6 @@ export default function EmailPopup() {
         <button
           onClick={handleClose}
           className="absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-          aria-label="Close popup"
         >
           <X size={20} />
         </button>
@@ -98,113 +99,60 @@ export default function EmailPopup() {
 
           <h2 className="text-2xl font-bold text-center mb-2 text-gray-900 dark:text-white">
             {status === "success"
-              ? "Successfully Subscribed! 🎉"
+              ? "🎉 Almost There!"
               : "Get Exclusive Updates"}
           </h2>
 
           <p className="text-center text-gray-600 dark:text-gray-300 mb-6">
             {status === "success"
-              ? "Thank you for subscribing! Check your inbox for a special welcome offer."
-              : "Join our newsletter for insider tips, exclusive offers, and industry insights."}
+              ? "Please check your email to confirm your subscription!"
+              : "Join our newsletter for marketing tips and exclusive offers."}
           </p>
 
           {status === "success" ? (
             <div className="text-center">
               <button
                 onClick={handleClose}
-                className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl hover:opacity-90 transition-opacity"
+                className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl hover:opacity-90"
               >
                 Continue Browsing
               </button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                >
-                  Name (Optional)
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="John Doe"
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-800 dark:text-white outline-none transition-all"
-                  disabled={status === "loading"}
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                >
-                  Email Address *
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-800 dark:text-white outline-none transition-all"
-                  disabled={status === "loading"}
-                />
-              </div>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Your name (optional)"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-purple-500 dark:bg-gray-800 dark:text-white"
+                disabled={status === "loading"}
+              />
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Your email address"
+                required
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-purple-500 dark:bg-gray-800 dark:text-white"
+                disabled={status === "loading"}
+              />
 
               {status === "error" && (
-                <p className="text-sm text-red-500 text-center">
-                  {errorMessage}
-                </p>
+                <p className="text-sm text-red-500 text-center">{message}</p>
               )}
 
               <button
                 type="submit"
                 disabled={status === "loading"}
-                className="w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl hover:opacity-90 disabled:opacity-50"
               >
-                {status === "loading" ? (
-                  <span className="flex items-center justify-center">
-                    <svg
-                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
-                    Subscribing...
-                  </span>
-                ) : (
-                  "Subscribe Now"
-                )}
+                {status === "loading" ? "Subscribing..." : "Subscribe Now"}
               </button>
 
-              <p className="text-xs text-center text-gray-500 dark:text-gray-400 mt-4">
-                By subscribing, you agree to our{" "}
-                <a
-                  href="/privacy-policy"
-                  className="text-purple-600 dark:text-purple-400 hover:underline"
-                >
-                  Privacy Policy
-                </a>{" "}
-                and consent to receive updates.
+              <p className="text-xs text-center text-gray-500">
+                By subscribing, you agree to our Privacy Policy and consent to
+                receive emails.
               </p>
             </form>
           )}

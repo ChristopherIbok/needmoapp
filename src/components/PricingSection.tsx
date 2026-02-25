@@ -67,10 +67,9 @@ const packages = [
 ];
 
 export default function PricingSection() {
-  const { locationData, loading, convertPrice, setPreferredCurrency } = useLocation();
+  const { locationData, loading, convertPrice, setPreferredCurrency } =
+    useLocation();
   const sectionRef = useRef<HTMLElement>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -96,31 +95,6 @@ export default function PricingSection() {
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const onScroll = () => {
-      const card = el.querySelector<HTMLElement>(".pricing-card");
-      if (!card) return;
-      const gap = 20;
-      const full = card.offsetWidth + gap;
-      const idx = Math.round(el.scrollLeft / full);
-      setActiveIndex(Math.max(0, Math.min(packages.length - 1, idx)));
-    };
-    el.addEventListener("scroll", onScroll, { passive: true } as any);
-    return () => el.removeEventListener("scroll", onScroll as any);
-  }, []);
-
-  const scrollToIndex = (idx: number) => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const card = el.querySelector<HTMLElement>(".pricing-card");
-    if (!card) return;
-    const gap = 20;
-    const full = card.offsetWidth + gap;
-    el.scrollTo({ left: idx * full, behavior: "smooth" });
-  };
-
   const handleScrollToContact = () => {
     document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
   };
@@ -134,10 +108,12 @@ export default function PricingSection() {
     >
       <div className="container-custom">
         {/* Section Header */}
-        <div className="text-center mb-4 reveal relative">
-          {/* Optional currency selector */}
+        <div className="text-center mb-8 reveal relative">
+          {/* Currency selector */}
           <div className="absolute right-0 top-0 hidden sm:block">
-            <label htmlFor="currencySelector" className="sr-only">Currency</label>
+            <label htmlFor="currencySelector" className="sr-only">
+              Currency
+            </label>
             <select
               id="currencySelector"
               className="currency-select text-sm px-3 py-1.5 rounded border border-[#E0E0E0] dark:border-[#2A3540] bg-white dark:bg-[#1E2830] text-[#1A2332] dark:text-white"
@@ -145,8 +121,23 @@ export default function PricingSection() {
               onChange={(e) => setPreferredCurrency(e.target.value)}
               aria-label="Select currency"
             >
-              {["USD","EUR","GBP","CAD","AUD","NGN","KES","JPY","INR","ZAR","BRL","MXN"].map((c) => (
-                <option key={c} value={c}>{c}</option>
+              {[
+                "USD",
+                "EUR",
+                "GBP",
+                "CAD",
+                "AUD",
+                "NGN",
+                "KES",
+                "JPY",
+                "INR",
+                "ZAR",
+                "BRL",
+                "MXN",
+              ].map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
               ))}
             </select>
           </div>
@@ -157,7 +148,8 @@ export default function PricingSection() {
           </p>
         </div>
 
-        <div className="text-center mb-4 reveal">
+        {/* Currency note */}
+        <div className="text-center mb-6 reveal">
           <span
             className="text-sm italic text-[#666666] dark:text-gray-400"
             aria-live="polite"
@@ -170,28 +162,27 @@ export default function PricingSection() {
           </span>
         </div>
 
-        {/* Pricing Cards */}
-        <div
-          ref={scrollRef}
-          className="pricing-container items-start"
-        >
+        {/* Pricing Cards - 2 per row, smaller cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-5xl mx-auto">
           {packages.map((pkg, index) => (
             <article
               key={pkg.name}
-              className={`pricing-card pricing-card-item reveal ${pkg.featured ? "pricing-featured" : ""}`}
+              className={`pricing-card-item reveal ${
+                pkg.featured ? "md:scale-105 z-10" : ""
+              }`}
               style={{ transitionDelay: `${index * 150}ms` }}
             >
               <div
-                className={`relative h-full rounded-2xl p-[30px] md:p-8 transition-all duration-300 ${
+                className={`relative h-full rounded-xl p-6 transition-all duration-300 ${
                   pkg.featured
-                    ? "bg-white dark:bg-[#1E2830] border-2 border-[#FF6B35] shadow-2xl"
-                    : "bg-white dark:bg-[#1E2830] border-2 border-[#E0E0E0] dark:border-[#2A3540] shadow-md hover:border-[#FF6B35] hover:shadow-xl"
+                    ? "bg-white dark:bg-[#1E2830] border-2 border-[#FF6B35] shadow-xl"
+                    : "bg-white dark:bg-[#1E2830] border border-[#E0E0E0] dark:border-[#2A3540] shadow-sm hover:border-[#FF6B35] hover:shadow-md"
                 }`}
               >
                 {/* Most Popular Badge */}
                 {pkg.featured && (
                   <div
-                    className="absolute -top-4 left-1/2 -translate-x-1/2 badge badge-orange text-xs font-bold tracking-wider whitespace-nowrap"
+                    className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#FF6B35] text-white text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap shadow-sm"
                     aria-label="Most popular package"
                   >
                     ⭐ Most Popular
@@ -199,67 +190,53 @@ export default function PricingSection() {
                 )}
 
                 {/* Package Name */}
-                <h3
-                  className="font-bold text-[#1A2332] dark:text-white mb-1"
-                  style={{
-                    fontFamily: "'Montserrat', sans-serif",
-                    fontSize: "1.4rem",
-                  }}
-                >
+                <h3 className="font-bold text-[#1A2332] dark:text-white text-xl mb-1">
                   {pkg.name}
                 </h3>
 
                 {/* Target clients */}
-                <p
-                  className="text-sm italic text-[#666666] dark:text-gray-400 mb-6"
-                  style={{ fontSize: "0.85rem" }}
-                >
+                <p className="text-xs text-[#666666] dark:text-gray-400 mb-4 line-clamp-1">
                   {pkg.target}
                 </p>
 
-                <div className="mb-2 min-h-[4.5rem]">
+                {/* Price */}
+                <div className="mb-4">
                   <div className="flex items-baseline gap-1 flex-wrap">
-                    <span
-                      className="font-black text-[#1A2332] dark:text-white"
-                      style={{
-                        fontFamily: "'Montserrat', sans-serif",
-                        fontSize: "2rem",
-                      }}
-                    >
+                    <span className="font-bold text-2xl text-[#1A2332] dark:text-white">
                       {loading ? "..." : convertPrice(pkg.priceUSD.low)}
                     </span>
-                    <span className="text-[#666666] dark:text-gray-400 text-sm">–</span>
-                    <span
-                      className="font-black text-[#1A2332] dark:text-white"
-                      style={{
-                        fontFamily: "'Montserrat', sans-serif",
-                        fontSize: "2rem",
-                      }}
-                    >
+                    <span className="text-[#666666] dark:text-gray-400 text-xs">
+                      –
+                    </span>
+                    <span className="font-bold text-2xl text-[#1A2332] dark:text-white">
                       {loading ? "" : convertPrice(pkg.priceUSD.high)}
                     </span>
-                    <span className="text-[#666666] dark:text-gray-400 text-sm">/mo</span>
+                    <span className="text-[#666666] dark:text-gray-400 text-xs">
+                      /mo
+                    </span>
                   </div>
                 </div>
 
                 {/* Divider */}
-                <div className="h-px bg-[#E0E0E0] dark:bg-[#2A3540] my-6" aria-hidden="true" />
+                <div
+                  className="h-px bg-[#E0E0E0] dark:bg-[#2A3540] my-4"
+                  aria-hidden="true"
+                />
 
-                {/* Features */}
-                <ul className="space-y-3 mb-8" aria-label={`${pkg.name} package features`}>
+                {/* Features - compact list */}
+                <ul
+                  className="space-y-2 mb-5"
+                  aria-label={`${pkg.name} package features`}
+                >
                   {pkg.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-3">
+                    <li key={feature} className="flex items-start gap-2">
                       <span
-                        className="flex-shrink-0 mt-0.5 font-bold"
-                        style={{ color: "#FF6B35" }}
+                        className="flex-shrink-0 text-[#FF6B35] font-bold text-sm"
                         aria-hidden="true"
                       >
                         ✓
                       </span>
-                      <span
-                        className="text-[#333333] dark:text-[#B0B8C1]"
-                        style={{ fontSize: "0.95rem", lineHeight: "1.5" }}
-                      >
+                      <span className="text-sm text-[#333333] dark:text-[#B0B8C1]">
                         {feature}
                       </span>
                     </li>
@@ -269,12 +246,11 @@ export default function PricingSection() {
                 {/* CTA Button */}
                 <button
                   onClick={handleScrollToContact}
-                  className={`w-full py-3 px-6 rounded-lg font-bold text-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B35] ${
+                  className={`w-full py-2.5 px-4 rounded-lg font-semibold text-sm transition-all duration-200 ${
                     pkg.featured
-                      ? "bg-[#FF6B35] text-white hover:bg-[#E55A2B] shadow-lg"
+                      ? "bg-[#FF6B35] text-white hover:bg-[#E55A2B] shadow-md"
                       : "bg-[#FF6B35] text-white hover:bg-[#E55A2B]"
                   }`}
-                  style={{ fontFamily: "'Montserrat', sans-serif" }}
                   aria-label={`Get started with ${pkg.name} package`}
                 >
                   {pkg.cta}
@@ -284,26 +260,15 @@ export default function PricingSection() {
           ))}
         </div>
 
-        {/* Dots indicator */}
-        <div className="pricing-dots md:hidden mt-3 flex justify-center gap-2">
-          {packages.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => scrollToIndex(i)}
-              aria-label={`View package ${i + 1}`}
-              className={`dot ${activeIndex === i ? "active" : ""}`}
-            />
-          ))}
-        </div>
-
         {/* Bottom note */}
         <div className="text-center mt-10 reveal">
-          <p className="text-[#666666] dark:text-gray-400 mb-2">
-            Custom packages available. Let&apos;s build something that fits your needs.
+          <p className="text-sm text-[#666666] dark:text-gray-400 mb-2">
+            Custom packages available. Let&apos;s build something that fits your
+            needs.
           </p>
           <button
             onClick={handleScrollToContact}
-            className="font-semibold underline underline-offset-4 transition-colors duration-200 hover:opacity-80"
+            className="text-sm font-semibold underline underline-offset-4 transition-colors duration-200 hover:text-[#FF6B35]"
             style={{ color: "#FF6B35" }}
           >
             Contact us for custom pricing

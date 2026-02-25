@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useTheme } from "@/hooks/useThemeV2";
 import { LogoText } from "@/components/Logo";
+import { Moon, Sun, Menu, X, ArrowRight } from "lucide-react";
 
 const navLinks = [
   { label: "Home", href: "#home" },
@@ -24,7 +25,14 @@ export default function Navigation() {
       setIsScrolled(window.scrollY > 20);
 
       // Update active section
-      const sections = ["home", "services", "pricing", "portfolio", "about", "contact"];
+      const sections = [
+        "home",
+        "services",
+        "pricing",
+        "portfolio",
+        "about",
+        "contact",
+      ];
       for (const section of sections.reverse()) {
         const el = document.getElementById(section);
         if (el && window.scrollY >= el.offsetTop - 100) {
@@ -47,13 +55,17 @@ export default function Navigation() {
     }
   };
 
-  const [themeSwitching, setThemeSwitching] = useState(false);
-
-  const handleToggleTheme = () => {
-    setThemeSwitching(true);
-    toggleTheme();
-    window.setTimeout(() => setThemeSwitching(false), 300);
-  };
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [mobileOpen]);
 
   return (
     <>
@@ -64,16 +76,9 @@ export default function Navigation() {
         role="banner"
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled
-            ? "bg-white/95 dark:bg-[#0F1419]/95 backdrop-blur-md shadow-lg"
+            ? "bg-white/90 dark:bg-[#0A0A0A]/90 backdrop-blur-md shadow-sm"
             : "bg-transparent"
         }`}
-        style={{
-          backgroundColor: isScrolled
-            ? theme === "dark"
-              ? "rgba(15, 20, 25, 0.95)"
-              : "rgba(255, 255, 255, 0.95)"
-            : "transparent",
-        }}
       >
         <nav
           aria-label="Main navigation"
@@ -83,7 +88,11 @@ export default function Navigation() {
           <LogoText
             theme="auto"
             size="md"
-            onClick={() => document.getElementById("home")?.scrollIntoView({ behavior: "smooth" })}
+            onClick={() =>
+              document
+                .getElementById("home")
+                ?.scrollIntoView({ behavior: "smooth" })
+            }
           />
 
           {/* Desktop Navigation */}
@@ -92,16 +101,13 @@ export default function Navigation() {
               <button
                 key={link.label}
                 onClick={() => handleNavClick(link.href)}
-                className={`text-sm font-semibold transition-colors duration-200 hover:text-[#FF6B35] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B35] rounded px-1 ${
+                className={`text-sm font-medium transition-colors duration-200 hover:text-[#FF6B35] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B35] rounded px-1 py-2 ${
                   activeSection === link.href.replace("#", "")
                     ? "text-[#FF6B35]"
                     : isScrolled
-                    ? theme === "dark"
-                      ? "text-gray-200"
-                      : "text-[#333333]"
-                    : "text-[#1A2332] dark:text-white"
+                    ? "text-gray-700 dark:text-gray-300"
+                    : "text-gray-900 dark:text-white"
                 }`}
-                style={{ fontFamily: "'Inter', sans-serif" }}
               >
                 {link.label}
               </button>
@@ -109,43 +115,52 @@ export default function Navigation() {
           </div>
 
           {/* Right side actions */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             {/* Dark mode toggle */}
             {mounted && (
               <button
-                onClick={handleToggleTheme}
-                aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
-                className={`theme-toggle-btn touch-target rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B35] ${themeSwitching ? "switching" : ""} ${
-                  isScrolled
-                    ? "text-[#1A2332] dark:text-white"
-                    : "text-[#1A2332] dark:text-white"
-                }`}
+                onClick={toggleTheme}
+                aria-label={`Switch to ${
+                  theme === "light" ? "dark" : "light"
+                } mode`}
+                className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B35]"
               >
                 {theme === "light" ? (
-                  // Moon icon (when in light mode, click to go dark)
-                  <svg className="theme-icon moon-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="currentColor" />
-                  </svg>
+                  <Moon
+                    size={20}
+                    className="text-gray-700 dark:text-gray-300"
+                  />
                 ) : (
-                  // Sun icon (when in dark mode, click to go light)
-                  <svg className="theme-icon sun-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
-                    <circle cx="12" cy="12" r="5" fill="currentColor" />
-                    <path d="M12 1v4m0 14v4M4.22 4.22l2.83 2.83m9.9 9.9l2.83 2.83M1 12h4m14 0h4M4.22 19.78l2.83-2.83m9.9-9.9l2.83-2.83" stroke="currentColor" strokeWidth="2" fill="none"/>
-                  </svg>
+                  <Sun size={20} className="text-gray-700 dark:text-gray-300" />
                 )}
               </button>
+            )}
+
+            {/* Theme mode selector - subtle */}
+            {mounted && (
+              <div className="hidden sm:block">
+                <select
+                  value={mode}
+                  onChange={(e) =>
+                    setThemeMode(e.target.value as "auto" | "light" | "dark")
+                  }
+                  className="text-xs bg-transparent text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-800 rounded-md px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-[#FF6B35] cursor-pointer"
+                  aria-label="Theme mode"
+                >
+                  <option value="auto">Auto</option>
+                  <option value="light">Light</option>
+                  <option value="dark">Dark</option>
+                </select>
+              </div>
             )}
 
             {/* CTA Button - Desktop */}
             <button
               onClick={() => handleNavClick("#contact")}
-              className="hidden lg:inline-flex items-center gap-2 bg-[#FF6B35] text-white font-bold px-5 py-2.5 rounded-lg text-sm hover:bg-[#E55A2B] transition-all duration-200 hover:scale-105 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B35] focus-visible:ring-offset-2"
-              style={{ fontFamily: "'Montserrat', sans-serif" }}
+              className="hidden lg:inline-flex items-center gap-2 bg-[#FF6B35] text-white font-semibold px-5 py-2.5 rounded-lg text-sm hover:bg-[#E55A2B] transition-all duration-200 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B35] focus-visible:ring-offset-2"
             >
               Book Free Strategy Call
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
+              <ArrowRight size={16} />
             </button>
 
             {/* Hamburger - Mobile */}
@@ -154,104 +169,116 @@ export default function Navigation() {
               aria-label={mobileOpen ? "Close menu" : "Open menu"}
               aria-expanded={mobileOpen}
               aria-controls="mobile-menu"
-              className="lg:hidden touch-target rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B35] text-[#1A2332] dark:text-white"
+              className="lg:hidden w-10 h-10 rounded-lg flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B35]"
             >
-              <div className="flex flex-col gap-1.5 w-6" aria-hidden="true">
-                <span
-                  className="hamburger-line"
-                  style={{
-                    transform: mobileOpen ? "rotate(45deg) translate(5px, 5px)" : "none",
-                  }}
-                />
-                <span
-                  className="hamburger-line"
-                  style={{
-                    opacity: mobileOpen ? 0 : 1,
-                  }}
-                />
-                <span
-                  className="hamburger-line"
-                  style={{
-                    transform: mobileOpen ? "rotate(-45deg) translate(5px, -5px)" : "none",
-                  }}
-                />
-              </div>
+              {mobileOpen ? (
+                <X size={24} className="text-gray-900 dark:text-white" />
+              ) : (
+                <Menu size={24} className="text-gray-900 dark:text-white" />
+              )}
             </button>
           </div>
         </nav>
 
         {/* Mobile Menu */}
-        <nav id="mobile-menu" aria-label="Mobile navigation" className={`mobile-menu lg:hidden ${mobileOpen ? "open" : ""}`}>
-          <header>
-            {/* Close button */}
-            <button
-              className="touch-target text-white"
-              aria-label="Close menu"
-              onClick={() => setMobileOpen(false)}
-            >
-              ✕
-            </button>
-            {/* Dark mode toggle in menu + Optional three-state select */}
-            {mounted && (
+        <div
+          id="mobile-menu"
+          className={`fixed inset-0 z-50 lg:hidden transition-transform duration-300 ease-in-out ${
+            mobileOpen ? "translate-x-0" : "translate-x-full"
+          }`}
+        >
+          {/* Backdrop */}
+          <div
+            className={`absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${
+              mobileOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+            }`}
+            onClick={() => setMobileOpen(false)}
+            aria-hidden="true"
+          />
+
+          {/* Menu panel */}
+          <div className="absolute right-0 top-0 h-full w-full max-w-sm bg-white dark:bg-[#0A0A0A] shadow-xl overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-800">
+              <LogoText theme="auto" size="sm" />
               <button
-                onClick={handleToggleTheme}
-                aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
-                className={`theme-toggle-btn touch-target text-white ${themeSwitching ? "switching" : ""}`}
+                onClick={() => setMobileOpen(false)}
+                aria-label="Close menu"
+                className="w-10 h-10 rounded-lg flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
               >
-                {theme === "light" ? (
-                  <svg className="theme-icon moon-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="currentColor" />
-                  </svg>
-                ) : (
-                  <svg className="theme-icon sun-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
-                    <circle cx="12" cy="12" r="5" fill="currentColor" />
-                    <path d="M12 1v4m0 14v4M4.22 4.22l2.83 2.83m9.9 9.9l2.83 2.83M1 12h4m14 0h4M4.22 19.78l2.83-2.83m9.9-9.9l2.83-2.83" stroke="currentColor" strokeWidth="2" fill="none"/>
-                  </svg>
-                )}
+                <X size={20} className="text-gray-900 dark:text-white" />
               </button>
-            )}
-            {mounted && (
-              <div className="pl-2">
-                <label htmlFor="themeSelect" className="sr-only">Theme</label>
-                <select
-                  id="themeSelect"
-                  value={mode}
-                  onChange={(e) => setThemeMode(e.target.value as "auto" | "light" | "dark")}
-                  className="text-white/90 bg-transparent border border-white/20 rounded px-2 py-1 text-sm"
-                  aria-label="Theme mode"
-                  style={{ WebkitAppearance: "none" }}
-                >
-                  <option value="auto">Auto</option>
-                  <option value="light">Light</option>
-                  <option value="dark">Dark</option>
-                </select>
+            </div>
+
+            {/* Theme controls in mobile menu */}
+            <div className="p-6 border-b border-gray-200 dark:border-gray-800">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Theme
+                </span>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={toggleTheme}
+                    aria-label={`Switch to ${
+                      theme === "light" ? "dark" : "light"
+                    } mode`}
+                    className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+                  >
+                    {theme === "light" ? (
+                      <Moon size={18} className="text-gray-700" />
+                    ) : (
+                      <Sun size={18} className="text-gray-300" />
+                    )}
+                  </button>
+                  <select
+                    value={mode}
+                    onChange={(e) =>
+                      setThemeMode(e.target.value as "auto" | "light" | "dark")
+                    }
+                    className="text-sm bg-transparent text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#FF6B35] cursor-pointer"
+                    aria-label="Theme mode"
+                  >
+                    <option value="auto">Auto</option>
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                  </select>
+                </div>
               </div>
-            )}
-          </header>
-          <ul className="menu-list">
-            {navLinks.map((link) => (
-              <li key={link.label}>
-                <button
-                  onClick={() => handleNavClick(link.href)}
-                  className={`menu-link ${activeSection === link.href.replace("#", "") ? "active" : ""}`}
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                >
-                  {link.label}
-                </button>
-              </li>
-            ))}
-          </ul>
-          <div className="mobile-menu-cta">
-            <button
-              onClick={() => handleNavClick("#contact")}
-              className="cta-button"
-              style={{ fontFamily: "'Montserrat', sans-serif'" }}
-            >
-              Book Free Strategy Call
-            </button>
+            </div>
+
+            {/* Navigation links */}
+            <ul className="p-6 space-y-4">
+              {navLinks.map((link) => (
+                <li key={link.label}>
+                  <button
+                    onClick={() => handleNavClick(link.href)}
+                    className={`w-full text-left py-3 text-lg font-medium transition-colors duration-200 hover:text-[#FF6B35] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B35] rounded ${
+                      activeSection === link.href.replace("#", "")
+                        ? "text-[#FF6B35]"
+                        : "text-gray-700 dark:text-gray-300"
+                    }`}
+                  >
+                    {link.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+
+            {/* Mobile CTA */}
+            <div className="p-6 border-t border-gray-200 dark:border-gray-800">
+              <button
+                onClick={() => handleNavClick("#contact")}
+                className="w-full flex items-center justify-center gap-2 bg-[#FF6B35] text-white font-semibold py-4 px-6 rounded-lg hover:bg-[#E55A2B] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B35] focus-visible:ring-offset-2"
+              >
+                Book Free Strategy Call
+                <ArrowRight size={18} />
+              </button>
+            </div>
           </div>
-        </nav>
+        </div>
       </header>
+
+      {/* Spacer to prevent content from going under fixed header */}
+      <div className="h-16 md:h-20" aria-hidden="true" />
     </>
   );
 }

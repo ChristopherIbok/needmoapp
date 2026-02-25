@@ -36,9 +36,9 @@ export function LogoSVG({
 
   // Color resolution
   const needmoColor =
-    theme === "dark" ? "#FFFFFF" : theme === "light" ? "#1A2332" : undefined;
+    theme === "dark" ? "#000052" : theme === "light" ? "#1A2332" : undefined;
   const consultColor =
-    theme === "dark" ? "#E0E0E0" : theme === "light" ? "#333333" : undefined;
+    theme === "dark" ? "#000052" : theme === "light" ? "#333333" : undefined;
 
   if (variant === "icon") {
     return (
@@ -212,9 +212,7 @@ export default function Logo({
   }
 
   return (
-    <div className={`inline-flex items-center ${className}`}>
-      {logoEl}
-    </div>
+    <div className={`inline-flex items-center ${className}`}>{logoEl}</div>
   );
 }
 
@@ -240,18 +238,10 @@ export function LogoText({
   const fs = fontSizes[size];
 
   const needmoColor =
-    theme === "dark"
-      ? "#FFFFFF"
-      : theme === "light"
-      ? "#1A2332"
-      : undefined;
+    theme === "dark" ? "#FFFFFF" : theme === "light" ? "#1A2332" : undefined;
 
   const consultColor =
-    theme === "dark"
-      ? "#E0E0E0"
-      : theme === "light"
-      ? "#333333"
-      : undefined;
+    theme === "dark" ? "#E0E0E0" : theme === "light" ? "#333333" : undefined;
 
   const content = (
     <span className="flex items-center gap-0.5 select-none">
@@ -271,7 +261,9 @@ export function LogoText({
       />
       <span className="flex flex-col leading-none">
         <span
-          className={`font-black tracking-tight ${theme === "auto" ? "text-[#1A2332] dark:text-white" : ""}`}
+          className={`font-black tracking-tight ${
+            theme === "auto" ? "text-[#1A2332] dark:text-white" : ""
+          }`}
           style={{
             fontFamily: "var(--font-montserrat), Montserrat, sans-serif",
             fontSize: fs.main,
@@ -282,7 +274,9 @@ export function LogoText({
           NEEDMO
         </span>
         <span
-          className={`font-light tracking-[0.3em] ${theme === "auto" ? "text-[#333333] dark:text-[#E0E0E0]" : ""}`}
+          className={`font-light tracking-[0.3em] ${
+            theme === "auto" ? "text-[#333333] dark:text-[#E0E0E0]" : ""
+          }`}
           style={{
             fontFamily: "var(--font-montserrat), Montserrat, sans-serif",
             fontSize: fs.sub,

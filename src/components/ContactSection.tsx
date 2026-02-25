@@ -2,6 +2,17 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "@/hooks/useLocation";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Clock,
+  Send,
+  CheckCircle,
+  User,
+  Briefcase,
+  MessageSquare,
+} from "lucide-react";
 
 export default function ContactSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -15,13 +26,17 @@ export default function ContactSection() {
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
-  const [businessMsg, setBusinessMsg] = useState<{ text: string; color: string }>({
+  const [businessMsg, setBusinessMsg] = useState<{
+    text: string;
+    color: string;
+  }>({
     text: "",
     color: "#FFA726",
   });
 
   useEffect(() => {
-    const tz = locationData.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const tz =
+      locationData.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
     const update = () => {
       try {
         const now = new Date();
@@ -60,16 +75,29 @@ export default function ContactSection() {
     const compute = () => {
       const now = new Date();
       const hour = parseInt(
-        now.toLocaleString("en-US", { hour: "numeric", hour12: false, timeZone: businessTimezone }),
+        now.toLocaleString("en-US", {
+          hour: "numeric",
+          hour12: false,
+          timeZone: businessTimezone,
+        }),
         10
       );
-      const day = now.toLocaleString("en-US", { weekday: "short", timeZone: businessTimezone });
+      const day = now.toLocaleString("en-US", {
+        weekday: "short",
+        timeZone: businessTimezone,
+      });
       const isWeekday = !["Sat", "Sun"].includes(day);
       const isDuringHours = hour >= 9 && hour < 18;
       if (isWeekday && isDuringHours) {
-        setBusinessMsg({ text: "🟢 We're online now! Expect a response within 2-4 hours.", color: "#4CAF50" });
+        setBusinessMsg({
+          text: "We're online now! Expect a response within 2-4 hours.",
+          color: "#4CAF50",
+        });
       } else {
-        setBusinessMsg({ text: "🟡 We're currently offline. We'll respond within 24 hours.", color: "#FFA726" });
+        setBusinessMsg({
+          text: "We're currently offline. We'll respond within 24 hours.",
+          color: "#FFA726",
+        });
       }
     };
     compute();
@@ -115,28 +143,41 @@ export default function ContactSection() {
       id="contact"
       aria-label="Contact NEEDMO CONSULT"
       className="section-padding relative overflow-hidden"
-      style={{
-        background: "linear-gradient(135deg, #1A2332 0%, #FF6B35 100%)",
-      }}
     >
-      {/* Dark mode overlay */}
+      {/* Gradient background that changes with theme */}
       <div
-        className="absolute inset-0 hidden dark:block"
+        className="absolute inset-0 transition-colors duration-300"
         style={{
-          background: "linear-gradient(135deg, #0F1419 0%, #E55A2B 100%)",
+          background: "linear-gradient(135deg, #1A2332 0%, #FF6B35 100%)",
         }}
         aria-hidden="true"
       />
 
-      {/* Decorative elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+      {/* Dark mode gradient overlay */}
+      <div
+        className="absolute inset-0 transition-opacity duration-300 dark:opacity-100 opacity-0"
+        style={{
+          background: "linear-gradient(135deg, #0A0A0A 0%, #E55A2B 100%)",
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Decorative elements - now theme-aware */}
+      <div
+        className="absolute inset-0 overflow-hidden pointer-events-none"
+        aria-hidden="true"
+      >
         <div
-          className="absolute -top-40 -right-40 w-96 h-96 rounded-full opacity-10"
-          style={{ background: "radial-gradient(circle, white 0%, transparent 70%)" }}
+          className="absolute -top-40 -right-40 w-96 h-96 rounded-full opacity-10 dark:opacity-5"
+          style={{
+            background: "radial-gradient(circle, white 0%, transparent 70%)",
+          }}
         />
         <div
-          className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full opacity-10"
-          style={{ background: "radial-gradient(circle, white 0%, transparent 70%)" }}
+          className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full opacity-10 dark:opacity-5"
+          style={{
+            background: "radial-gradient(circle, white 0%, transparent 70%)",
+          }}
         />
       </div>
 
@@ -146,7 +187,7 @@ export default function ContactSection() {
           <div className="flex-1 text-white">
             <div className="contact-reveal reveal-left">
               <span
-                className="inline-block text-sm font-semibold uppercase tracking-[2px] mb-4 opacity-80"
+                className="inline-block text-sm font-semibold uppercase tracking-[2px] mb-4 text-white/80"
                 style={{ fontFamily: "'Inter', sans-serif" }}
               >
                 Get In Touch
@@ -168,10 +209,12 @@ export default function ContactSection() {
                 className="contact-subheadline text-white/80 mb-8 max-w-lg"
                 style={{ fontSize: "1.1rem", lineHeight: "1.7" }}
               >
-                Whether you&apos;re starting from scratch or ready to scale, we&apos;d love to learn about your goals and show you how we can help.
+                Whether you&apos;re starting from scratch or ready to scale,
+                we&apos;d love to learn about your goals and show you how we can
+                help.
               </p>
 
-              {/* Contact info */}
+              {/* Contact info - with Lucide icons */}
               <div className="contact-info space-y-4 mb-8">
                 <a
                   href="mailto:hello@needmoconsult.com"
@@ -179,33 +222,30 @@ export default function ContactSection() {
                   aria-label="Email us at hello@needmoconsult.com"
                 >
                   <span
-                    className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-200"
-                    style={{ background: "rgba(255,255,255,0.15)" }}
+                    className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-200 bg-white/10 dark:bg-white/5 backdrop-blur-sm"
                     aria-hidden="true"
                   >
-                    📧
+                    <Mail size={18} className="text-white" />
                   </span>
                   <span>hello@needmoconsult.com</span>
                 </a>
 
                 <div className="flex items-center gap-3 text-white/80">
                   <span
-                    className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                    style={{ background: "rgba(255,255,255,0.15)" }}
+                    className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-white/10 dark:bg-white/5 backdrop-blur-sm"
                     aria-hidden="true"
                   >
-                    📞
+                    <Phone size={18} className="text-white" />
                   </span>
                   <span>+234 (706) 898-4590</span>
                 </div>
 
                 <div className="flex items-center gap-3 text-white/80">
                   <span
-                    className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                    style={{ background: "rgba(255,255,255,0.15)" }}
+                    className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-white/10 dark:bg-white/5 backdrop-blur-sm"
                     aria-hidden="true"
                   >
-                    📍
+                    <MapPin size={18} className="text-white" />
                   </span>
                   <span>Available Worldwide</span>
                 </div>
@@ -213,29 +253,54 @@ export default function ContactSection() {
 
               {/* Timezone message */}
               <div
-                className="rounded-xl p-4 contact-timezone"
+                className="rounded-xl p-5 contact-timezone backdrop-blur-sm"
                 style={{ background: "rgba(255,255,255,0.1)" }}
                 aria-live="polite"
               >
-                <div className="timezone-info">
-                  <p className="user-time">
-                    {loading ? (
-                      <span className="text-white/70 text-sm italic">Detecting your timezone...</span>
-                    ) : (
-                      <>
-                        Your local time:{" "}
-                        <span id="currentTime">{currentTime || locationData.localTime}</span>{" "}
-                        {timezoneAbbr && <span id="timezone">{timezoneAbbr}</span>}
-                      </>
-                    )}
-                  </p>
+                <div className="flex items-start gap-3">
+                  <Clock
+                    size={18}
+                    className="text-white/70 flex-shrink-0 mt-0.5"
+                  />
+                  <div className="timezone-info">
+                    <p className="user-time text-white/90">
+                      {loading ? (
+                        <span className="text-white/70 text-sm italic">
+                          Detecting your timezone...
+                        </span>
+                      ) : (
+                        <>
+                          Your local time:{" "}
+                          <span
+                            id="currentTime"
+                            className="font-semibold text-white"
+                          >
+                            {currentTime || locationData.localTime}
+                          </span>{" "}
+                          {timezoneAbbr && (
+                            <span id="timezone" className="text-white/70">
+                              {timezoneAbbr}
+                            </span>
+                          )}
+                        </>
+                      )}
+                    </p>
+                    <p className="text-white/60 text-sm mt-1">
+                      Our team typically responds within 24 hours.
+                    </p>
+                    <p
+                      className="business-hours-message text-sm mt-2 flex items-center gap-2"
+                      aria-live="polite"
+                      style={{ color: businessMsg.color }}
+                    >
+                      <span
+                        className="w-2 h-2 rounded-full"
+                        style={{ backgroundColor: businessMsg.color }}
+                      />
+                      {businessMsg.text}
+                    </p>
+                  </div>
                 </div>
-                <p className="text-white/60 text-sm">
-                  Our team typically responds within 24 hours.
-                </p>
-                <p className="business-hours-message text-sm mt-1" aria-live="polite" style={{ color: businessMsg.color }}>
-                  {businessMsg.text}
-                </p>
               </div>
             </div>
           </div>
@@ -244,13 +309,19 @@ export default function ContactSection() {
           <div className="flex-1 w-full max-w-lg">
             <div className="contact-reveal reveal-right">
               <div
-                className="rounded-2xl p-8 shadow-2xl"
-                style={{ backgroundColor: "rgba(255,255,255,0.95)" }}
+                className="rounded-2xl p-8 shadow-2xl backdrop-blur-sm transition-colors duration-300"
+                style={{
+                  backgroundColor: "rgba(255, 255, 255, 0.98)",
+                }}
               >
                 <h3
-                  className="font-bold text-[#1A2332] mb-6"
-                  style={{ fontFamily: "'Montserrat', sans-serif", fontSize: "1.4rem" }}
+                  className="font-bold text-[#1A2332] dark:text-[#1A2332] mb-6 flex items-center gap-2"
+                  style={{
+                    fontFamily: "'Montserrat', sans-serif",
+                    fontSize: "1.4rem",
+                  }}
                 >
+                  <Send size={22} className="text-[#FF6B35]" />
                   Book a Free 30-Minute Strategy Call
                 </h3>
 
@@ -260,10 +331,15 @@ export default function ContactSection() {
                     role="alert"
                     aria-live="assertive"
                   >
-                    <div className="text-5xl mb-4"></div>
+                    <div className="flex justify-center mb-4">
+                      <CheckCircle size={48} className="text-[#4CAF50]" />
+                    </div>
                     <h4
                       className="font-bold text-[#1A2332] mb-2"
-                      style={{ fontFamily: "'Montserrat', sans-serif", fontSize: "1.2rem" }}
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontSize: "1.2rem",
+                      }}
                     >
                       Message Sent!
                     </h4>
@@ -277,8 +353,9 @@ export default function ContactSection() {
                       <div>
                         <label
                           htmlFor="contact-name"
-                          className="block text-sm font-semibold text-[#333333] mb-1.5"
+                          className="block text-sm font-semibold text-[#333333] mb-1.5 flex items-center gap-2"
                         >
+                          <User size={14} className="text-[#FF6B35]" />
                           Your Name *
                         </label>
                         <input
@@ -286,9 +363,11 @@ export default function ContactSection() {
                           type="text"
                           required
                           value={formData.name}
-                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                          onChange={(e) =>
+                            setFormData({ ...formData, name: e.target.value })
+                          }
                           placeholder="John Smith"
-                          className="w-full px-4 py-3 rounded-lg border border-[#E0E0E0] text-[#333333] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:border-transparent transition-all duration-200"
+                          className="w-full px-4 py-3 rounded-lg border border-[#E0E0E0] text-[#333333] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:border-transparent transition-all duration-200 bg-white"
                           style={{ fontSize: "0.95rem" }}
                           aria-required="true"
                         />
@@ -297,8 +376,9 @@ export default function ContactSection() {
                       <div>
                         <label
                           htmlFor="contact-email"
-                          className="block text-sm font-semibold text-[#333333] mb-1.5"
+                          className="block text-sm font-semibold text-[#333333] mb-1.5 flex items-center gap-2"
                         >
+                          <Mail size={14} className="text-[#FF6B35]" />
                           Email Address *
                         </label>
                         <input
@@ -306,9 +386,11 @@ export default function ContactSection() {
                           type="email"
                           required
                           value={formData.email}
-                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                          onChange={(e) =>
+                            setFormData({ ...formData, email: e.target.value })
+                          }
                           placeholder="john@company.com"
-                          className="w-full px-4 py-3 rounded-lg border border-[#E0E0E0] text-[#333333] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:border-transparent transition-all duration-200"
+                          className="w-full px-4 py-3 rounded-lg border border-[#E0E0E0] text-[#333333] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:border-transparent transition-all duration-200 bg-white"
                           style={{ fontSize: "0.95rem" }}
                           aria-required="true"
                         />
@@ -317,17 +399,23 @@ export default function ContactSection() {
                       <div>
                         <label
                           htmlFor="contact-business"
-                          className="block text-sm font-semibold text-[#333333] mb-1.5"
+                          className="block text-sm font-semibold text-[#333333] mb-1.5 flex items-center gap-2"
                         >
+                          <Briefcase size={14} className="text-[#FF6B35]" />
                           Business / Brand Name
                         </label>
                         <input
                           id="contact-business"
                           type="text"
                           value={formData.business}
-                          onChange={(e) => setFormData({ ...formData, business: e.target.value })}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              business: e.target.value,
+                            })
+                          }
                           placeholder="Your Business Name"
-                          className="w-full px-4 py-3 rounded-lg border border-[#E0E0E0] text-[#333333] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:border-transparent transition-all duration-200"
+                          className="w-full px-4 py-3 rounded-lg border border-[#E0E0E0] text-[#333333] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:border-transparent transition-all duration-200 bg-white"
                           style={{ fontSize: "0.95rem" }}
                         />
                       </div>
@@ -335,8 +423,9 @@ export default function ContactSection() {
                       <div>
                         <label
                           htmlFor="contact-message"
-                          className="block text-sm font-semibold text-[#333333] mb-1.5"
+                          className="block text-sm font-semibold text-[#333333] mb-1.5 flex items-center gap-2"
                         >
+                          <MessageSquare size={14} className="text-[#FF6B35]" />
                           Tell us about your goals *
                         </label>
                         <textarea
@@ -344,9 +433,14 @@ export default function ContactSection() {
                           required
                           rows={4}
                           value={formData.message}
-                          onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              message: e.target.value,
+                            })
+                          }
                           placeholder="What are you looking to achieve with social media?"
-                          className="w-full px-4 py-3 rounded-lg border border-[#E0E0E0] text-[#333333] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:border-transparent transition-all duration-200 resize-none"
+                          className="w-full px-4 py-3 rounded-lg border border-[#E0E0E0] text-[#333333] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:border-transparent transition-all duration-200 resize-none bg-white"
                           style={{ fontSize: "0.95rem" }}
                           aria-required="true"
                         />
@@ -354,7 +448,7 @@ export default function ContactSection() {
 
                       <button
                         type="submit"
-                        className="contact-cta w-full py-4 px-6 rounded-lg font-bold text-white transition-all duration-200 hover:scale-[1.02] hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B35] focus-visible:ring-offset-2"
+                        className="contact-cta w-full py-4 px-6 rounded-lg font-bold text-white transition-all duration-200 hover:scale-[1.02] hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B35] focus-visible:ring-offset-2 flex items-center justify-center gap-2"
                         style={{
                           backgroundColor: "#FF6B35",
                           fontFamily: "'Montserrat', sans-serif",
@@ -362,11 +456,13 @@ export default function ContactSection() {
                         }}
                         aria-label="Submit contact form and book a strategy call"
                       >
-                        Book My Free Strategy Call 🚀
+                        <Send size={18} />
+                        Book My Free Strategy Call
                       </button>
 
                       <p className="text-center text-xs text-[#999999]">
-                        No commitment required. We&apos;ll reach out within 24 hours.
+                        No commitment required. We&apos;ll reach out within 24
+                        hours.
                       </p>
                     </div>
                   </form>
