@@ -13,7 +13,6 @@ export default function EmailPopup() {
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    // Show popup after 5 seconds if user hasn't subscribed
     const timer = setTimeout(() => {
       const hasSubscribed = localStorage.getItem("email-subscribed");
       const hasClosed = sessionStorage.getItem("popup-closed");
@@ -32,7 +31,6 @@ export default function EmailPopup() {
     setErrorMessage("");
 
     try {
-      // Replace with your actual API endpoint
       const response = await fetch("/api/subscribe-email", {
         method: "POST",
         headers: {
@@ -50,7 +48,6 @@ export default function EmailPopup() {
       setStatus("success");
       localStorage.setItem("email-subscribed", "true");
 
-      // Close after 3 seconds on success
       setTimeout(() => {
         setIsOpen(false);
         setStatus("idle");
@@ -74,7 +71,6 @@ export default function EmailPopup() {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
       <div className="relative w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-xl">
-        {/* Close button */}
         <button
           onClick={handleClose}
           className="absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
@@ -83,9 +79,7 @@ export default function EmailPopup() {
           <X size={20} />
         </button>
 
-        {/* Content */}
         <div className="p-8">
-          {/* Icon/Illustration */}
           <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center">
             <svg
               className="w-8 h-8 text-white"
