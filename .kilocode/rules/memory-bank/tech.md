@@ -141,3 +141,31 @@ bun typecheck      # Run TypeScript type checking
 - None required for base template
 - Add as needed for features
 - Use `.env.local` for local development
+
+{
+"compilerOptions": {
+"target": "es5",
+"lib": ["dom", "dom.iterable", "esnext"],
+"allowJs": true,
+"skipLibCheck": true,
+"strict": true,
+"noEmit": true,
+"esModuleInterop": true,
+"module": "esnext",
+"moduleResolution": "bundler",
+"resolveJsonModule": true,
+"isolatedModules": true,
+"jsx": "preserve", // This should be "preserve" for Next.js
+"incremental": true,
+"plugins": [
+{
+"name": "next"
+}
+],
+"paths": {
+"@/_": ["./_"]
+}
+},
+"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+"exclude": ["node_modules"]
+}
