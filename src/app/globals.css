@@ -530,7 +530,7 @@ input, textarea, select {
 
 /* Pricing card highlight */
 .pricing-featured {
-  transform: scale(1.05);
+  transform: scale(1.1);
   z-index: 10;
 }
 
