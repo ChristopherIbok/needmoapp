@@ -36,7 +36,7 @@ export async function subscribeToNewsletter(
       process.env.MAILCHIMP_AUDIENCE_ID,
       {
         email_address: email,
-        status: "subscribed", // Use 'pending' for double opt-in
+        status: "subscribed",
         merge_fields: {
           FNAME: firstName,
           LNAME: lastName,
@@ -52,27 +52,12 @@ export async function subscribeToNewsletter(
   } catch (error: any) {
     console.error("Mailchimp subscription error:", error);
 
-    // Handle specific Mailchimp errors
     if (error.status === 400) {
-      // Check for "Member Exists" error
       if (error.response?.body?.title === "Member Exists") {
         return {
           success: false,
           message: "This email is already subscribed to our newsletter!",
         };
-      }
-
-      // Check for validation errors
-      if (error.response?.body?.errors) {
-        const emailError = error.response.body.errors.find(
-          (e: any) => e.field === "email_address"
-        );
-        if (emailError) {
-          return {
-            success: false,
-            message: "Please enter a valid email address.",
-          };
-        }
       }
     }
 
@@ -83,7 +68,6 @@ export async function subscribeToNewsletter(
   }
 }
 
-// Optional: Double opt-in version (recommended for better deliverability)
 export async function subscribeWithDoubleOptIn(
   email: string,
   name: string
@@ -106,7 +90,7 @@ export async function subscribeWithDoubleOptIn(
       process.env.MAILCHIMP_AUDIENCE_ID,
       {
         email_address: email,
-        status: "pending", // This sends a confirmation email
+        status: "pending",
         merge_fields: {
           FNAME: firstName,
           LNAME: lastName,
